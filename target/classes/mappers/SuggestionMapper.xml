@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="global.sesoc.tasukete.dao.SuggestionMapper">
+<!-- 건의사항 -->
+	<select id="selectAll" resultType="Suggestion" parameterType="map">
+		SELECT 
+			suggestionseq
+			,suggestion_title
+			,userid
+			,suggestion_contents
+			,suggestion_result
+			,reception_date
+			,completion_date
+			,progress_flag
+		FROM Suggestion
+		<if test="searchItem != null">
+			WHERE ${searchItem} LIKE '%'||#{searchWord}||'%'
+		</if>
+		ORDER BY suggestionseq DESC
+	</select>
+		
+	<!-- 전체 글개수 조회 -->
+	<select id="getSuggestionCount" parameterType="map" resultType="int">
+	SELECT count(*)
+	FROM suggestion
+	<if test="searchItem != null">
+	WHERE ${searchItem} LIKE '%'||#{searchWord} || '%'
+	</if>
+	</select>
+	
+	<!-- 건의 글 올리기-->
+	<insert id="suggestion" parameterType="Suggestion">
+	INSERT INTO suggestion(
+	suggestionseq,
+	userid,
+	suggestion_title,
+	reception_date,
+	suggestion_contents
+	)
+	
+	VALUES
+	(
+	SEQ_suggestion_suggestionseq.nextval,
+	#{userid},
+	#{suggestion_title},
+	#{reception_date},
+	#{suggestion_contents}
+	)
+	</insert>
+	
+	<!-- 건의디테일 -->
+	<select id="selectOne2" parameterType="int" resultType="Suggestion">
+		SELECT 
+			*
+		FROM suggestion 
+		WHERE suggestionseq = #{suggestionseq}
+	</select>
+	
+	<!-- 글 삭제 -->
+	<delete id="delete" parameterType="int">
+		delete suggestion
+		where suggestionseq = #{suggestionseq}
+	</delete>
+	
+	<!-- 글 수정 -->
+	<update id="update" parameterType="Suggestion">
+		update suggestion
+		set
+			suggestion_title = #{suggestion_title},
+			reception_date = #{reception_date},
+			suggestion_contents = #{suggestion_contents}
+		where suggestionseq = #{suggestionseq}
+	</update>
+</mapper>	
