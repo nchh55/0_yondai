@@ -44,7 +44,7 @@
 				<!-- Banner -->
 					<section id="banner">
 						<div class="inner">
-							<h2>Need Of </h2>
+							<h2>Need Of Help</h2>
 							<p>도움을 주고싶은,<br />
 							도움이 필요한,<br />
 							커뮤니티.</p>
