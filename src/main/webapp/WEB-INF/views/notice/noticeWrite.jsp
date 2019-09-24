@@ -8,16 +8,18 @@
 <title>TASUKETE - YONDAI</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <link rel="stylesheet" href="resources/assets/css/main.css" />
 <script>
-//신고하기
-$(function(){		 
-$("#report").on("click", report);
-});	
-function report(){
-alert("신고하기"); 
-$(".content").load("resources/report2.jsp");         		
-}
+	//신고하기
+	$(function(){		 
+		$("#report").on("click", report);
+	});	
+	
+	function report(){
+		alert("신고하기"); 
+		$(".content").load("resources/report2.jsp");         		
+	}
 </script>     
 </head>
 <body class="is-preload">
@@ -123,7 +125,7 @@ $(".content").load("resources/report2.jsp");
                                        <li><a href="#">블랙리스트 관리</a></li>
                                     </ul>
                                  </li>                              
-                                 <li><a href="#" id="matchingMgmt">매칭 관리</a></li>
+                                 <li><a href="matchingList" id="matchingMgmt">매칭 관리</a></li>
                                  <li><a href="#" id="matchingStats">매칭 통계</a></li>
                                  <li><a href="#">예약 관리</a></li>
                               </c:if>

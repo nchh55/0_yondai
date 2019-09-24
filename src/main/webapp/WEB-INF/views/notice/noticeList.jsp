@@ -20,6 +20,8 @@
 		var form = $("#notice_searchForm");
 		form.submit();
 	}
+	
+	
 	//신고하기
 	$(function(){		 
 	$("#report").on("click", report);
@@ -98,11 +100,11 @@
 										<div class="text-center">
 											<ul class="pagination">
 												<li><a href="#">◀</a></li>
-												<li><a href="userList?currentPage=${currentPage == '1' ? currnetPage : currentPage-1 }&searchItem=${searchItem}&searchWord=${searchWord}">◁</a></li>
+												<li><a href="noticeList?currentPage=${currentPage == '1' ? currnetPage : currentPage-1 }&searchItem=${searchItem}&searchWord=${searchWord}">◁</a></li>
 												<c:forEach var="page" begin="1" end="${totalPages}">
-												<li><a class="page active" href="noticeList?currentPage=${page}&searchItem=${searchItem}&searchWord=${searchWord}">${page}</a></li>
+													<li><a class="page active" href="noticeList?currentPage=${page}&searchItem=${searchItem}&searchWord=${searchWord}">${page}</a></li>
 												</c:forEach>
-												<li><a href="userList?currentPage=${currentPage == totalPages ? currentPage : currentPage+1}&searchItem=${searchItem}&searchWord=${searchWord}">▷</a></li>
+												<li><a href="noticeList?currentPage=${currentPage == totalPages ? currentPage : currentPage+1}&searchItem=${searchItem}&searchWord=${searchWord}">▷</a></li>
 												<li><a href="#">▶</a></li>
 											</ul>
 										</div>
@@ -161,7 +163,7 @@
 		                                       <li><a href="#">블랙리스트 관리</a></li>
 		                                    </ul>
 		                                 </li>                              
-		                                 <li><a href="#" id="matchingMgmt">매칭 관리</a></li>
+		                                 <li><a href="matchingList" id="matchingMgmt">매칭 관리</a></li>
 		                                 <li><a href="#" id="matchingStats">매칭 통계</a></li>
 		                                 <li><a href="#">예약 관리</a></li>
 		                              </c:if>

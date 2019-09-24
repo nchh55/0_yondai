@@ -20,7 +20,7 @@ public class NoticeController {
 	@Autowired
 	NoticeRepository repository;
 	
-	// 검색, 첫화면
+	//공지사항 조회(전체)
 	@RequestMapping(value="/noticeList", method=RequestMethod.GET)
 	public String noticeList(
 			@RequestParam(value="searchItem",  defaultValue="notice_title") String searchItem, 
@@ -49,13 +49,20 @@ public class NoticeController {
 		return "notice/noticeList";
 	}
 	
-	//공지사항 상세(조회)
+	//공지사항 조회(상세)
 	@RequestMapping(value="/noticeDetail" , method = RequestMethod.GET)
 	public String noticeDetail(int noticeseq, Model model){
+		
 		Notice notice = repository.selectOne(noticeseq);
 		
-		model.addAttribute("Notice", notice);
-	
+		model.addAttribute("noticeseq", notice.getNoticeseq());
+		model.addAttribute("notice_title", notice.getNotice_title());
+		model.addAttribute("userid", notice.getUserid());
+		model.addAttribute("notice_contents", notice.getNotice_contents());
+		model.addAttribute("notice_date", notice.getNotice_date());
+		
+		System.out.println(notice.getNotice_contents());
+			
 		return "notice/noticeDetail";	
 	}
 	
@@ -76,29 +83,35 @@ public class NoticeController {
 		
 		return "redirect:/noticeList";
 	}
+
 	
+	//공지사항 수정(조회)
+	@RequestMapping(value="/noticeUpdate", method=RequestMethod.GET)
+	public String noticeUpdate(Notice notice, Model model) {
+				
+		model.addAttribute("noticeseq", notice.getNoticeseq());
+		model.addAttribute("notice_title", notice.getNotice_title());
+		model.addAttribute("userid", notice.getUserid());
+		model.addAttribute("notice_contents", notice.getNotice_contents());
+		model.addAttribute("notice_date", notice.getNotice_date());
+		
+		return "notice/noticeUpdate";
+	}
 	
+	//공지사항 수정(처리)
+	@RequestMapping(value="/noticeUpdate", method=RequestMethod.POST)
+	public String noticeUpdateProcess(Notice notice, Model model, RedirectAttributes rttr) {
+		int result = repository.update(notice);
+		
+		return "redirect:noticeList";
+	}
+	
+	//공지사항 삭제
 	@RequestMapping(value="/noticeDelete", method = RequestMethod.GET)
 	public String noticeDelete(int noticeseq, Model model){
 		int result = repository.delete(noticeseq);
 		
 		return "redirect:noticeList";
-	}
-	
-	
-	@RequestMapping(value="/noticeUpdate", method=RequestMethod.GET)
-	public String noticeUpdate(int noticeseq, Model model) {
-		Notice notice = repository.selectOne(noticeseq);
-		
-		return "notice/noticeUpdate";
-	}
-	
-	@RequestMapping(value="/noticeUpdate", method=RequestMethod.POST)
-	public String noticeUpdateProcess(Notice notice, Model model, RedirectAttributes rttr) {
-		int result = repository.update(notice);
-		model.addAttribute("noticeseq",notice.getNoticeseq());
-		
-		return "redirect:noticeDetail";
 	}
 	
 	

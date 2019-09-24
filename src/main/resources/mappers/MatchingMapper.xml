@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="global.sesoc.tasukete.dao.MatchingMapper">
+
+	<select id="selectAll" resultType="Request" parameterType="map">
+		SELECT
+			requestseq
+			,request_contents
+			,userid
+			,support_id
+			,request_location
+			,support_location
+			,request_date
+			,completion_date
+			,disabled
+			,pregnancy
+			,request_flag
+		FROM request
+		<if test="request_flag != '전체'">
+		WHERE	
+			request_flag = #{request_flag}
+		</if>
+		ORDER BY request_date DESC	
+	</select>
+	
+	<select id="getMatchingCount" resultType="int" parameterType="map">
+		SELECT	count(*)
+		FROM	request
+		WHERE	request_flag = #{request_flag}
+	</select>
+	
+<!-- 	
+	<select id="selectFlag" resultType="Request" parameterType="Request">
+		SELECT
+			requestseq
+			,request_contents
+			,userid
+			,support_id
+			,request_location
+			,support_location
+			,request_date
+			,completion_date
+			,disabled
+			,pregnancy
+			,request_flag
+		FROM request
+		WHERE
+			request_flag = #{request_flag}
+		ORDER BY request_date DESC	
+	
+	</select> -->
+
+
+</mapper>

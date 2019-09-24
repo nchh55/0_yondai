@@ -80,7 +80,12 @@
                            		<div class="col-12">
                               		<ul class="actions">
                               			<li><input type="submit" value="수정 완료" class="primary" /></li>
-                                 		<li><a href="userList" class="button">수정 취소</a></li>
+                              			<c:if test="${sessionScope.loginId == 'admin' }">
+                              				<li><a href="userList" class="button">수정 취소</a></li>
+                              			</c:if>
+                              			<c:if test="${sessionScope.loginId != 'admin' }">
+                                 			<li><a href="index" class="button">수정 취소</a></li>
+                              			</c:if>
                               		</ul>
                            		</div>
                         	</div>  

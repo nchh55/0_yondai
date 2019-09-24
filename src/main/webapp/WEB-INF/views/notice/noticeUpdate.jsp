@@ -1,22 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE HTML>
 <html>
 <head>
 <title>TASUKETE - YONDAI</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <link rel="stylesheet" href="resources/assets/css/main.css" />
 <script>
-//신고하기
-$(function(){		 
-$("#report").on("click", report);
-});	
-function report(){
-alert("신고하기"); 
-$(".content").load("resources/report2.jsp");         		
-}
+	//신고하기
+	$(function(){		 
+		$("#report").on("click", report);
+	});
+	
+	function report(){
+		alert("신고하기"); 
+		$(".content").load("resources/report2.jsp");         		
+	}
 </script>     
 </head>
 <body class="is-preload">
@@ -39,67 +42,49 @@ $(".content").load("resources/report2.jsp");
                      </header>
                                                          
                   <!-- Section -->
-                     <section>   
+                  <section>   
                   <!-- Form --> 
                   <div class="box">                                     
-                     <h2>회원정보</h2>  
-                     	<form method="POST" action="userUpdate">
+                     <h2>공지사항</h2>  
+                     	<form method="POST" action="noticeUpdate">
                         	<div class="row gtr-uniform">
-                        		<div class="col-8">    
-                              		<input type="text" name="userid" id="userid" value="${userid}"/> 
-                          		</div>     
-                           		<div class="col-8">  
-                            		<input type="text" name="username" id="username" value="${username}"/>
-                           		</div>
-                           		<div class="col-8">   
-                              		<input type="text" name="userphone" id="userphone" value="${userphone}"/> 
+                        		<div class="col-1">
+                        			<input type="hidden" name="noticeseq" id="noticeseq" value="${noticeseq}">
+                        		</div>
+                        	    <div class="col-3"> 
+                              		작성자(ID)<input type="text" name="userid" id="userid" value="${userid}" readonly="readonly" /> 
                           		</div>
-                           		<div class="col-5">      
-                             		BIRTH : &nbsp<input type="date" name="userbirth" id="userbirth" value="${userbirth}"" />
-                           		</div>                                                            
-                           <!-- Break -->
-                           		<div> 장애 유무
-                          	  		<c:if test="${disabled == 'YES'}">  
-	                          	  		<input type="radio" id="demo-priority-low" name="disabled" value="YES" checked>
-	                          	  		<label for="demo-priority-low">YES</label> 
-                          	  		</c:if>
-                          	  		<c:if test="${disabled == 'NO'}">
-	                              		<input type="radio" id="demo-priority-low" name="disabled" value="YES">
-	                          	  		<label for="demo-priority-low">YES</label>
-	                          		</c:if>
+                       	    	<div class="col-3">      
+                             		작성일자<input type="date" name="notice_date" id="notice_date" value="${notice_date}" />
+                 
                            		</div>
-                           		<div>
-                           	  		<c:if test="${disabled == 'YES'}">  
-	                              		<input type="radio" id="demo-priority-normal" name="disabled" value="NO">
-	                              		<label for="demo-priority-normal">No</label> 
-                              		</c:if>
-                           	  		<c:if test="${disabled == 'NO'}">  
-	                              		<input type="radio" id="demo-priority-normal" name="disabled" value="NO" checked >
-	                              		<label for="demo-priority-normal">No</label> 
-                              		</c:if>
-                           		</div> &nbsp  
-                           		<div>
-                           			<label>  
-                           			</label> 
-                           		</div> 
-                            	<div class="col-11">
-                            	</div>
-                           		<!-- Break -->
-                           		<div class="col-8">
-                              		<textarea name="remark" id="remark" placeholder="기타 특이사항" rows="6"></textarea>
+                          		<div class="col-5"></div>
+                        	    <!--  -->
+                        	    <div class="col-1"></div>  
+                        	    <div class="col-10">   
+                             		제목<input type="text" name="notice_title" id="notice_title" value="${notice_title}"/>
+                           		</div>
+                           		<div class="col-1"></div>
+                           		<!--  -->
+                           		<div class="col-1"></div>
+                           		<div class="col-10">   
+                              		내용<textarea name="notice_contents" id="notice_contents" rows="10">${notice_contents}</textarea>
                           		</div>
-                           		<!-- Break -->
-                           		<div class="col-12">
+                          		<div class="col-1"></div>
+                          		<!--  -->
+                          		<div class="col-7"></div>
+                           		<div class="col-3">
                               		<ul class="actions">
-                              			<li><input type="submit" value="수정 완료" class="primary" /></li>
-                                 		<li><a href="userList" class="button">수정 취소</a></li>
+                              			<c:if test="${sessionScope.loginId == 'admin' }">
+                                 			<li><input type="submit" value="수정 완료" class="primary" /></li>
+                                 		</c:if>
+                                 		<li><a href="noticeList" class="button">수정 취소</a></li>
                               		</ul>
                            		</div>
+                           		<div class="col-1"></div>
                         	</div>  
-                     	</form>  
-                 	</div>
-                    <div class="posts">  
-                    </div>                           
+                     	</form>
+                     </div>  
                   </section>
                </div>
             </div>
@@ -145,7 +130,7 @@ $(".content").load("resources/report2.jsp");
                                        <li><a href="#">블랙리스트 관리</a></li>
                                     </ul>
                                  </li>                              
-                                 <li><a href="#" id="matchingMgmt">매칭 관리</a></li>
+                                 <li><a href="matchingList" id="matchingMgmt">매칭 관리</a></li>
                                  <li><a href="#" id="matchingStats">매칭 통계</a></li>
                                  <li><a href="#">예약 관리</a></li>
                               </c:if>
@@ -197,4 +182,3 @@ $(".content").load("resources/report2.jsp");
       <script src="assets/js/util.js"></script>
       <script src="assets/js/main.js"></script>
 </body>
-</html>

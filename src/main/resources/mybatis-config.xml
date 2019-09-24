@@ -19,5 +19,6 @@
 		<mapper resource="mappers/RequestMapper.xml" />
 		<mapper resource="mappers/SuggestionMapper.xml" />
 		<mapper resource="mappers/ComplimentMapper.xml" />
+		<mapper resource="mappers/MatchingMapper.xml" />
 	</mappers>
 </configuration>

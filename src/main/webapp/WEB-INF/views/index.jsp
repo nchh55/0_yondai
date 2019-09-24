@@ -107,7 +107,7 @@ $(function(){
                                           <li><a href="#">블랙리스트 관리</a></li>
                                        </ul>
                                     </li>                              
-                                    <li><a href="#" id="matchingMgmt">매칭 관리</a></li>
+                                    <li><a href="matchingMgmt" id="matchingMgmt">매칭 관리</a></li>
                                     <li><a href="#" id="matchingStats">매칭 통계</a></li>
                                     <li><a href="#">예약 관리</a></li>
                                  </c:if>

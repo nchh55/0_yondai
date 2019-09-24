@@ -125,7 +125,7 @@ public class UserController {
 		return "user/userList";	
 	}
 	
-	//회원정보 상세(조회)
+	//회원 조회(상세)
 	@RequestMapping(value="/userDetail" , method = RequestMethod.GET)
 	public String userDetail(String userid, Model model){
 		
@@ -143,7 +143,7 @@ public class UserController {
 		return "user/userDetail";
 	}
 	
-	//회원정보 상세(수정)
+	//회원 수정(조회)
 	@RequestMapping(value="/userUpdate" , method = RequestMethod.GET)
 	public String userUpdate(String userid, Model model){
 		
@@ -161,7 +161,7 @@ public class UserController {
 		return "user/userUpdate";
 	}
 	
-	//회원정보 수정(처리)
+	//회원 수정(처리)
 	@RequestMapping(value="/userUpdate" , method = RequestMethod.POST)
 	public String userUpdateProcess(Tasukete_user user){
 		int result = repository.update(user);
@@ -172,11 +172,18 @@ public class UserController {
 	//회원 탈퇴
 	@RequestMapping(value="/userDelete" , method = RequestMethod.POST)
 	public String  userDelete(Tasukete_user user, HttpSession session){
-		//System.out.println(user.getUserid());
-		int result = repository.delete(user.getUserid());
-		session.invalidate();
+		if(session.getAttribute("loginId") == "admin"){
+			repository.delete(user.getUserid());
+			session.invalidate();
+			
+			return "redirect:userList";
+		}else{
+			repository.delete(user.getUserid());
+			session.invalidate();
+			
+			return "redirect:index";
+		}
 		
-		return "redirect:index";
 	}
 	
 	
