@@ -11,6 +11,8 @@ public interface MatchingMapper {
 
 	public int getMatchingCount(Map<String, Object> map);
 
+	public Request selectOne(int requestseq);
+
 
 	
 	

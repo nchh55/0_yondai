@@ -158,7 +158,7 @@ input, select, textarea {
 
 		a:hover {
 			border-bottom-color: #595a5c;
-			color: #00cc2a !important;
+			color: #595a5c !important;
 		}
 
 			a:hover strong {
@@ -3123,7 +3123,7 @@ input, select, textarea {
 		-webkit-transition: margin-left 0.5s ease, box-shadow 0.5s ease;
 		-ms-transition: margin-left 0.5s ease, box-shadow 0.5s ease;
 		transition: margin-left 0.5s ease, box-shadow 0.5s ease;
-		background-color: #8fcc99;   
+		background-color: #4a4848; 
 		font-size: 0.9em;
 		position: relative; 
 		width: 26em;
@@ -3156,7 +3156,7 @@ input, select, textarea {
 				}
 
 			#sidebar > .inner > .alt {
-				background-color: #b3e3bc;
+				background-color: #727dab;
 				border-bottom: 0;
 				margin: -2.22222em 0 4.44444em -2.22222em;
 				padding: 2.22222em;
@@ -3222,12 +3222,12 @@ input, select, textarea {
 		@media screen and (max-width: 1680px) {
 
 			#sidebar {
-				width: 24em;
+				width: 50em; /* 사이드바 크기 조절  */ 
 			}
 
 				#sidebar > .inner {
 					padding: 1.66667em 1.66667em 1.33333em 1.66667em ;
-					width: 24em;
+					width: 50em; /* 사이드바 크기 조절  */ 
 				}
 
 					#sidebar > .inner > .alt {
@@ -3238,7 +3238,7 @@ input, select, textarea {
 
 				#sidebar .toggle {
 					height: 6.25em;
-					left: 24em;     /* 버튼위치 */
+					left: 50em; /* 사이드바 크기 조절  */ 
 					line-height: 6.25em;
 					text-indent: 5em;
 					width: 5em;
@@ -3249,7 +3249,7 @@ input, select, textarea {
 					}
 
 				#sidebar.inactive {
-					margin-left: -24em;
+					margin-left: -50em; /* 사이드바 크기 조절  */ 
 				}
 
 		}
@@ -3531,7 +3531,7 @@ input, select, textarea {
 			color: inherit;
 			cursor: pointer;
 			display: block;
-			font-size: 1.8em;
+			font-size: 2.1em;
 			padding: 0.625em 0;
 		}
 
@@ -3616,3 +3616,230 @@ input, select, textarea {
 			padding-top: 0;
 		}
 		
+
+
+
+
+/* matchingbar */
+
+
+
+	#matchingbar {
+		-moz-flex-grow: 0;
+		-webkit-flex-grow: 0; 
+		-ms-flex-grow: 0;
+		flex-grow: 0;
+		-moz-flex-shrink: 0;
+		-webkit-flex-shrink: 0;
+		-ms-flex-shrink: 0; 
+		flex-shrink: 0;
+		-moz-transition: margin-left 0.5s ease, box-shadow 0.5s ease;
+		-webkit-transition: margin-left 0.5s ease, box-shadow 0.5s ease;
+		-ms-transition: margin-left 0.5s ease, box-shadow 0.5s ease;
+		transition: margin-left 0.5s ease, box-shadow 0.5s ease;
+		background-color: #a1abe3;   
+		font-size: 0.9em;
+		position: relative; 
+		width: 26em;
+	}
+
+		#matchingbar h2 {
+			font-size: 1.38889em;
+		}
+
+		#matchingbar > .inner {
+			padding: 2.22222em 2.22222em 2.44444em 2.22222em ;
+			position: relative;
+			width: 23em;
+		}
+
+			#matchingbar > .inner > * {
+				border-bottom: solid 2px rgba(210, 215, 217, 0.75);
+				margin: 0 0 3.5em 0;
+				padding: 0 0 3.5em 0;
+			}
+
+				#matchingbar > .inner > * > :last-child {
+					margin-bottom: 0;
+				}
+
+				#matchingbar > .inner > *:last-child {
+					border-bottom: 0;
+					margin-bottom: 0;
+					padding-bottom: 0;
+				}
+
+			#matchingbar > .inner > .alt {
+				background-color: #727dab;
+				border-bottom: 0;
+				margin: -2.22222em 0 4.44444em -2.22222em;
+				padding: 2.22222em;
+				width: calc(100% + 4.44444em);
+			}
+			
+			 #matchingbar .button{    
+				box-shadow: inset 0 0 0 2px #ffffff;
+				color: #111210 !important; 	 			
+			}
+         
+		#matchingbar .toggle {
+			text-decoration: none; 
+			-moz-transition: left 0.5s ease;
+			-webkit-transition: left 0.5s ease;
+			-ms-transition: left 0.5s ease;
+			transition: left 0.5s ease;
+			-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+			border: 0;
+			display: block;
+			height: 7.5em;
+			left: 26em;
+			line-height: 7.5em;
+			outline: 0;
+			overflow: hidden;
+			position: absolute;
+			text-align: center;
+			text-indent: 7.5em;
+			top: 0;
+			width: 6em;
+			z-index: 10000;
+		}
+
+			#matchingbar .toggle:before {
+				-moz-osx-font-smoothing: grayscale;
+				-webkit-font-smoothing: antialiased;
+				display: inline-block;
+				font-style: normal;
+				font-variant: normal;
+				text-rendering: auto;
+				line-height: 1;
+				text-transform: none !important;
+				font-family: 'Font Awesome 5 Free';
+				font-weight: 900;
+			}
+
+			#matchingbar .toggle:before {
+				content: '\f0c9';
+				font-size: 2rem;
+				height: inherit;
+				left: 0;
+				line-height: inherit;
+				position: absolute;
+				text-indent: 0;
+				top: 0;
+				width: inherit;
+			}
+
+		#matchingbar.inactive {
+			margin-left: -26em;
+		}
+
+		@media screen and (max-width: 1680px) {
+
+			#matchingbar {
+				width: 24em;
+			}
+
+				#matchingbar > .inner {
+					padding: 1.66667em 1.66667em 1.33333em 1.66667em ;
+					width: 24em;
+				}
+
+					#matchingbar > .inner > .alt {
+						margin: -1.66667em 0 3.33333em -1.66667em;
+						padding: 1.66667em;
+						width: calc(100% + 3.33333em);
+					}
+
+				#matchingbar .toggle {
+					height: 6.25em;
+					left: 24em;
+					line-height: 6.25em;
+					text-indent: 5em;
+					width: 5em;
+				}
+
+					#matchingbar .toggle:before {
+						font-size: 1.5rem;
+					}
+
+				#matchingbar.inactive {
+					margin-left: -24em;
+				}
+
+		}
+
+		@media screen and (max-width: 1280px) {
+
+			#matchingbar {
+				box-shadow: 0 0 5em 0 rgba(0, 0, 0, 0.175);
+				height: 100%;
+				left: 0;
+				position: fixed;
+				top: 0;
+				z-index: 10000;
+			}
+
+				#matchingbar.inactive {
+					box-shadow: none;
+				}
+
+				#matchingbar > .inner {
+					-webkit-overflow-scrolling: touch;
+					height: 100%;
+					left: 0;
+					overflow-x: hidden;
+					overflow-y: auto;
+					position: absolute;
+					top: 0;
+				}
+
+					#matchingbar > .inner:after {
+						content: '';
+						display: block;
+						height: 4em;
+						width: 100%;
+					}
+
+				#matchingbar .toggle {
+					text-indent: 6em;
+					width: 6em;
+				}
+
+					#matchingbar .toggle:before {
+						font-size: 1.5rem;
+						margin-left: -0.4375em;
+					}
+
+				body.is-preload #matchingbar {
+					display: none;
+				}
+
+		}
+
+		@media screen and (max-width: 736px) {
+
+			#matchingbar .toggle {
+				text-indent: 7.25em;
+				width: 7.25em;
+			}
+
+				#matchingbar .toggle:before {
+					color: #7f888f;
+					margin-left: -0.0625em;
+					margin-top: -0.25em;
+					font-size: 1.1rem;
+					z-index: 1;
+				}
+
+				#matchingbar .toggle:after {
+					background: rgba(222, 225, 226, 0.75);
+					border-radius: 0.375em;
+					content: '';
+					height: 3.5em;
+					left: 1em;
+					position: absolute;
+					top: 1em;
+					width: 5em;
+				}
+
+		}

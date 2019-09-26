@@ -135,18 +135,18 @@
                                        <li><a href="#">블랙리스트 관리</a></li>
                                     </ul>
                                  </li>                              
-                                 <li><a href="#" id="matchingMgmt">매칭 관리</a></li>
+                                 <li><a href="matchingMgmt" id="matchingMgmt">매칭 관리</a></li>
                                  <li><a href="#" id="matchingStats">매칭 통계</a></li>
-                                 <li><a href="#">예약 관리</a></li>
+                                 <li><a href="suggestionList">건의 관리</a></li>
                               </c:if>
                               <c:if test="${sessionScope.loginId != 'admin'}">
-                              <li><a href="noticeList">공지사항</a></li>
-                              <c:if test="${sessionScope.loginId != null}">
-                              <li><a href="request">요청목록</a></li>   
-                              </c:if>                           
-                              <li><a href="#">칭찬하기</a></li>
-                              <li><a href="suggestionList">건의하기</a></li>
-                              <li><a href="#">편의시설</a></li>
+	                              <li><a href="noticeList">공지사항</a></li>
+	                              <c:if test="${sessionScope.loginId != null}">
+	                              	<li><a href="request">요청목록</a></li>   
+	                              </c:if>                           
+	                              <li><a href="#">칭찬하기</a></li>
+	                              <li><a href="suggestionList">건의하기</a></li>
+	                              <li><a href="#">편의시설</a></li>
                               </c:if>     
                            </ul>
                         </nav>

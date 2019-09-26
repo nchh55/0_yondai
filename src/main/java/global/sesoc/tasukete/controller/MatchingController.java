@@ -53,15 +53,14 @@ public class MatchingController {
 		return list;
 	}
 	
-	
-/*	@RequestMapping(value="/selectList" , method = RequestMethod.GET)
-	@ResponseBody
-	public List<Request> selectList(String request_flag){
-		List<Request> list = repository.selectFlag(request_flag);
+	@RequestMapping(value="/matchingDetail" , method = RequestMethod.GET)
+	public String matchingDetail(int requestseq, Model model){
+		Request request = repository.selectOne(requestseq);
 		
-		return list;
-	}*/
-	
-	
+		model.addAttribute("request", request);
+
+		return "matching/matchingDetail";
+	}
+		
 	
 }

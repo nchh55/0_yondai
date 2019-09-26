@@ -8,7 +8,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<link rel="stylesheet" href="resources/assets/css/main2.css" /> 
+<link rel="stylesheet" href="resources/assets/css/main.css" /> 
 <script>
 	var map;
 	var markers = [];
@@ -78,7 +78,7 @@
 			
 			var location = {lat: Number(item.request_location), lng: Number(item.support_location)};
 			var seq = item.requestseq;
-			//alert(seq);
+			alert(seq);
 			addMarker(location, seq, icon);
 		});
 		
@@ -107,19 +107,24 @@
         		//draggable: false,
         		icon: icon
         });
-        /*
-         	marker.addListener('click', function(){
-					marker.setAnimation(google.maps.Animation.BOUNCE);
-					matchingDetail(seq);
-                }
-        	}); 
-       	*/
-         	marker.addListener('click', function() {
-        		matchingDetail(seq);
-       		}); 
-       		
+        	marker.addEventListener('click', toggleBounce);
+       		/*
+        	marker.addEventListener('click', function() {
+       			matchingDetail(seq);
+       		});
+       		*/
        		
         	markers.push(marker);
+    }
+    
+    function toggleBounce() {
+        if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
+        
+        alert("마커 이벤트 테스트!!")
     }
     
     
@@ -143,7 +148,7 @@
 		var url  = 'matchingDetail?requestseq='
 			url += requestseq;
 		
-		window.open(url, "매칭 상세정보", "width=600, height=750");
+		window.open(url, "매칭 상세정보", "width=600px, height=700px");
 	}
 		
 </script>
@@ -171,8 +176,8 @@
                <div id="map" class="inner"></div>
             </div>
 
-         <!-- Sidebar --> 
-            <div id="sidebar">    
+         <!-- Sidebar -->
+            <div id="sidebar">
                <div class="inner"> 
 				<!-- Title -->
 					<section align="center">

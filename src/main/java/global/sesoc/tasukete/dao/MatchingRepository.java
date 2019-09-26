@@ -43,5 +43,13 @@ public class MatchingRepository {
 	}
 
 
+	public Request selectOne(int requestseq) {
+		MatchingMapper mapper = session.getMapper(MatchingMapper.class);
+		Request request = mapper.selectOne(requestseq);
+		
+		return request;
+	}
+
+
 
 }
