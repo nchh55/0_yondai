@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,12 +9,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="/resources/assets/css/main.css" />
 <script>
 
-	$(function(){
-		$("#userSearchBtn").on("click", userSearch);
+	$(function(){    
+		onlineUser();
 		
+		$("#userSearchBtn").on("click", userSearch);
 	})
 
  	function userSearch(){
@@ -21,6 +23,18 @@
 		form.submit();
 	}
 	
+	// 접속 중인 유저 체크
+	function onlineUser(){
+		var onlineUserList = ${onlineUserList}
+		
+		 $.each(onlineUserList, function(index, item){
+			 
+	 		$("td[data-userid="+item+"]").parent().css( {"border": "thick solid pink"});
+	 		
+		})                 
+		   
+	 	
+	}
 	
 </script>
 </head>
@@ -34,8 +48,15 @@
 
 							<!-- Header -->
 								<header id="header">
-									<a href="index" class="logo"><strong>TASUKETE</strong> Help Communication</a>
-								</header>
+                           <a href="index" class="logo"><strong>TASUKETE </strong> Help Communication</a>
+                           
+                           <sec:authorize access="hasRole('ROLE_USER')">
+                           <ul class="icons">
+                           <li><a href="#" id="report" class="button large">신고하기</a></li>  
+                           </ul>
+                           </sec:authorize>  
+                           
+                        </header>
 
 							<!-- Banner -->
 								<section id="banner">
@@ -45,26 +66,29 @@
 									</header>
 									<!-- 검색 : 첫화면 -->
 									<div class="col -6">
-										<form id="user_searchForm" action="userList" method="GET">
+										<form id="user_searchForm" action="/admin/userList" method="GET">
 							 			<select name="searchItem">
+								 			<option value="userid" ${searchItem == 'userid'?'selected' :'' }>아이디</option>
 								 			<option value="username" ${searchItem =='username'?'selected' :'' }>이름</option>
 								 			<option value="userphone" ${searchItem =='userphone'?'selected' :'' }>연락처</option>
  										</select>
-											<input type="text" name="searchWord">'
-											<button id="userSearchBtn" type="button">검색</button>'
+											<input type="text" name="searchWord" value="${searchWord}">
+											<button id="userSearchBtn" type="button">검색</button>
 										</form>
 									</div>
 									<div id="user_table">
 										<table>
-										<tr>
-											<th></th>
-											<th>이름</th>
-											<th>ID</th>
-											<th>생년월일</th>
-											<th>연락처</th>
-											<th>장애여부</th>
-											<th></th>
-										</tr>
+										<thead>
+											<tr>
+												<th></th>
+												<th>ID</th>
+												<th>이름</th>
+												<th>생년월일</th>
+												<th>연락처</th>
+												<th>장애여부</th>
+												<th></th>
+											</tr>
+										</thead>
 										<!-- 게시글이 없는 경우 -->
 										<c:if test="${empty list}">
 										<tr>
@@ -76,31 +100,34 @@
 										<c:if test="${not empty list }">
 											<c:forEach var="user" items="${list}" varStatus="stat">
 												<tr>
-													<td>${stat.count+(currentPage-1)*countPerPage}</td>
+													<td>${(navi.currentPage-1)*navi.countPerPage+stat.count}</td>
+													<td data-userid="${user.userid}">${user.userid}</td>
 													<td>${user.username}</td>
-													<td>${user.userid}</td>
 													<td>${user.userbirth}</td>
 													<td>${user.userphone}</td>
 													<td>${user.disabled}</td>
 													<td>
-														<a href="userDetail?userid=${user.userid}" class="button">상세조회</a>
+														<a href="/user/userDetail?userid=${user.userid}" class="button">상세조회</a>
 													</td>
 												</tr>
 											</c:forEach>
 										</c:if>
 										</table>
 										<!-- Paging 시작 -->
-										<div class="text-center">
-											<ul class="pagination">
-												<li><a href="#">◀</a></li>
-												<li><a href="userList?currentPage=${currentPage == '1' ? currnetPage : currentPage-1 }&searchItem=${searchItem}&searchWord=${searchWord}">◁</a></li>
-												<c:forEach var="page" begin="1" end="${totalPages}">
-												<li><a class="page active" href="userList?currentPage=${page}&searchItem=${searchItem}&searchWord=${searchWord}">${page}</a></li>
-												</c:forEach>
-												<li><a href="userList?currentPage=${currentPage == totalPages ? currentPage : currentPage+1}&searchItem=${searchItem}&searchWord=${searchWord}">▷</a></li>
-												<li><a href="#">▶</a></li>
-											</ul>
-										</div>
+										<ul class="pagination">
+											<li><a href="/admin/userList?currentPage=${navi.currentPage-navi.pagePerGroup}&searchItem=${searchItem}&searchWord=${searchWord}">◀</a></li>
+											<li><a href="/admin/userList?currentPage=${navi.currentPage-1}&searchItem=${searchItem}&searchWord=${searchWord}">◁</a></li>
+											<c:forEach var="page" begin="${navi.startPageGroup}" end="${navi.endPageGroup}">
+												<c:if test="${page == navi.currentPage}">
+													<li><a href="/admin/userList?currentPage=${page}&searchItem=${searchItem}&searchWord=${searchWord}" class="page active">${page}</a></li>
+												</c:if>
+												<c:if test="${page != navi.currentPage }">
+													<li><a href="/admin/userList?currentPage=${page}&searchItem=${searchItem}&searchWord=${searchWord}" class="page disabled">${page}</a></li>
+												</c:if>
+											</c:forEach>
+											<li><a href="/admin/userList?currentPage=${navi.currentPage+1}&searchItem=${searchItem}&searchWord=${searchWord}">▷</a></li>
+											<li><a href="/admin/userList?currentPage=${navi.currentPage+navi.pagePerGroup}&searchItem=${searchItem}&searchWord=${searchWord}">▶</a></li>
+										</ul>
 										<!-- Paging 끝 -->
 									</div>
 								</div>
@@ -109,63 +136,73 @@
 					</div>
 
 
-			<!-- Sidebar -->
-				<div id="sidebar">
-					<div class="inner">
+            <!-- Sidebar -->
+               <div id="sidebar">
+                  <div class="inner">
 
-						<!-- Section -->
-	                        <section>
-	                           <header class="major">
-	                              <a href="index2"><h2>Need Of Help</h2></a> 
-	                           </header>
-	                           <c:if test="${sessionScope.loginId == null }">                        
-	                                 <a href="login" class="button fit">로그인</a>  
-	                           </c:if>
-	                           <c:if test="${sessionScope.loginId != null }">
-	                              <div class="mini-posts">
-	                                 <article> 
-	                                    <h3>${sessionScope.loginName} 님 환영합니다!!</h3>   
-	                                 </article>   
-	                              </div>
-	                              <ul class="actions">
-	                                 <li>
-	                                    <a href="userDetail?userid=${sessionScope.loginId}" class="button">회원정보</a>
-	                                    <a href="logout" class="button">로그아웃</a>
-	                                 </li>
-	                              </ul>
-	                           </c:if>   
-	                        </section>
-	
-						<!-- Menu -->
-		                     <nav id="menu">
-		                           <header class="major">
-		                              <h2>메뉴</h2>
-		                           </header> 
-		                           <ul>
-		                              <c:if test="${sessionScope.loginId == 'admin'}">
-		                                 <li><a href="noticeList">공지 관리</a></li>
-		                                 <li>
-		                                    <span class="opener">회원 관리</span>
-		                                    <ul>
-		                                       <li><a href="userList">회원정보 관리</a></li>
-		                                       <li><a href="#">블랙리스트 관리</a></li>
-		                                    </ul>
-		                                 </li>                              
-		                                 <li><a href="matchingMgmt" id="matchingMgmt">매칭 관리</a></li>
-		                                 <li><a href="#" id="matchingStats">매칭 통계</a></li>
-		                                 <li><a href="suggestionList">건의 관리</a></li>
-		                              </c:if>
-		                              <c:if test="${sessionScope.loginId != 'admin'}">
-			                              <li><a href="noticeList">공지사항</a></li>
-			                              <c:if test="${sessionScope.loginId != null}">
-			                              	<li><a href="request">요청목록</a></li>   
-			                              </c:if>                           
-			                              <li><a href="#">칭찬하기</a></li>
-			                              <li><a href="suggestionList">건의하기</a></li>
-			                              <li><a href="#">편의시설</a></li>
-		                              </c:if>     
-		                           </ul>
-		                        </nav>
+                     <!-- Section -->
+                        <section>
+                           <header class="major">
+                              <a href="/index"><h2>Need Of Help</h2></a> 
+                           </header>
+							
+						   <sec:authorize access="isAnonymous()">                     
+                                 <a href="login" class="button fit">로그인</a>  
+                           </sec:authorize>
+                          
+                           <sec:authorize access="isAuthenticated()">
+                              <div class="mini-posts">     
+                                 <article>                         
+                                    <h3><sec:authentication property="principal.user.username"/> 님 환영합니다!!</h3>   
+                                 </article>   
+                              </div>   
+                              <ul class="actions">
+                                 <li>  
+                                    <form action="/logout" method="POST">
+                                    <sec:authorize access="!hasRole('ROLE_ADMIN')">
+                                    	<a href="/user/userDetail?userid=<sec:authentication property="principal.user.userid"/>" class="button">회원정보</a>
+                                    </sec:authorize>
+										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+										<button class="button" type="submit">로그아웃</button>
+						   			</form>
+                                 </li>
+                              </ul>
+                           </sec:authorize>
+                        </section>
+
+                     <!-- Menu -->
+                       <nav id="menu">
+                              <header class="major">
+                                 <h2>메뉴</h2>
+                              </header> 
+                              <ul>
+                                 <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                    <li><a href="/noticeList">공지 관리</a></li>
+                                    <li>
+                                       <span class="opener">회원 관리</span>
+                                       <ul>
+                                          <li><a href="/admin/userList">회원정보 관리</a></li>
+                                          <li><a href="#">블랙리스트 관리</a></li>
+                                       </ul>
+                                    </li>                              
+                                    <li><a href="/admin/matchingMgmt" id="matchingMgmt">매칭 관리</a></li>
+                                    <li><a href="#" id="matchingStats">매칭 통계</a></li>
+                                    <li><a href="#">예약 관리</a></li>
+                                 </sec:authorize>
+                                                
+                                 <sec:authorize access="permitAll">
+                                 <sec:authorize access="!hasRole('ROLE_ADMIN')">   
+                                 	<li><a href="/noticeList">공지사항</a></li>
+                                 	<sec:authorize access="hasRole('ROLE_USER')">
+                                 		<li><a href="/user/request">요청목록</a></li>   
+                                 	</sec:authorize>                         
+                                 	<li><a href="#">칭찬하기</a></li>
+                                 	<li><a href="/suggestionList">건의하기</a></li>
+                                 	<li><a href="#">편의시설</a></li>
+                                </sec:authorize>
+                                </sec:authorize>  
+                              </ul>
+                           </nav>
                   
 						<!-- Search -->
 							<section id="search" class="alt">
@@ -197,12 +234,12 @@
 		</div>
 		
 
-	<!-- Scripts -->
-		<!-- <script src="assets/js/jquery.min.js"></script> -->
-		<script src="assets/js/browser.min.js"></script>
-		<script src="assets/js/breakpoints.min.js"></script>
-		<script src="assets/js/util.js"></script>
-		<script src="assets/js/main.js"></script>
+      <!-- Scripts -->
+         <script src="/resources/assets/js/jquery.min.js"></script>
+         <script src="/resources/assets/js/browser.min.js"></script>
+         <script src="/resources/assets/js/breakpoints.min.js"></script>
+         <script src="/resources/assets/js/util.js"></script>
+         <script src="/resources/assets/js/main.js"></script>
 		
 </body>
 </html>

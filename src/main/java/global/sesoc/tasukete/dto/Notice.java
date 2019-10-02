@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Notice {
-	private String noticeseq;
+	private int noticeseq;
 	private String notice_title;
 	private String userid;
 	private String notice_contents;

@@ -14,9 +14,6 @@
 		<org.slf4j-version>1.7.22</org.slf4j-version>
 	</properties>
 	
-	<!-- ojdbc6.jar 레퍼런스 주소 // 해결 안될 때는 직접 복사-붙여넣기 /WEB-INF/lib/안에 파일을 직접 붙여넣는다. -->
-                                                   
-	
 	<dependencies>
 		<!-- Spring -->
 		<dependency>
@@ -205,6 +202,31 @@
 		    <artifactId>jackson-core</artifactId>
 		    <version>2.9.8</version>
 		</dependency>
+		
+		<!-- Security -->    
+		<dependency>
+		   <groupId>org.springframework.security</groupId>
+		   <artifactId>spring-security-web</artifactId>
+		   <version>4.2.13.RELEASE</version>
+		</dependency>
+		
+		<dependency>
+		   <groupId>org.springframework.security</groupId>
+		   <artifactId>spring-security-config</artifactId>
+		   <version>4.2.13.RELEASE</version>
+		</dependency>
+		
+		<dependency>
+		   <groupId>org.springframework.security</groupId>
+		   <artifactId>spring-security-core</artifactId>
+		   <version>4.2.13.RELEASE</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-taglibs -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-taglibs</artifactId>
+		    <version>4.2.13.RELEASE</version>
+		</dependency>		
 
 	</dependencies>
 	

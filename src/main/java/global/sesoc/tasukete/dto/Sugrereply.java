@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Sugrereply {
-	private String sugrereplyseq;
-	private String suggreplyseq;
+	private int sugrereplyseq;
+	private int suggreplyseq;
 	private String userid;
 	private String sugreplyre_contents;
 	private String sugreplyre_date;

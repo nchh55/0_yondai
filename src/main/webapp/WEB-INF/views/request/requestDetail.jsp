@@ -125,57 +125,72 @@
 
 
 			<!-- Sidebar -->
-	<div id="sidebar">
-		<div class="inner">
-	
-			<!-- Section -->
-				<section>
-					<header class="major">
-						<a href="index"><h2>Need Of Help</h2></a>
-					</header>
-					<div class="mini-posts">
-						<article> 
-							<h3>${sessionScope.loginName} 님 환영합니다!!</h3>   
-						</article>   
-					</div>
-					<ul class="actions">
-						<li>
-							<a href="userDetail?userid=${sessionScope.loginId}" class="button">회원정보</a>
-							<a href="logout" class="button">로그아웃</a>
-						</li>
-					</ul>
-				</section>
+               <div id="sidebar">
+                  <div class="inner">
 
-			<!-- Menu -->
-				<nav id="menu">
-	                           <header class="major">
-	                              <h2>메뉴</h2>
-	                           </header> 
-	                           <ul>
-	                              <c:if test="${sessionScope.loginId == 'admin'}">
-	                                 <li><a href="noticeList">공지 관리</a></li>
-	                                 <li>
-	                                    <span class="opener">회원 관리</span>
-	                                    <ul>
-	                                       <li><a href="userList">회원정보 관리</a></li>
-	                                       <li><a href="blackList">블랙리스트 관리</a></li>
-	                                    </ul>
-	                                 </li>                              
-	                                 <li><a href="#" id="matchingMgmt">매칭 관리</a></li>
-	                                 <li><a href="#" id="matchingStats">매칭 통계</a></li>
-	                                 <li><a href="#">예약 관리</a></li>
-	                              </c:if>
-	                              <c:if test="${sessionScope.loginId != 'admin'}">
-	                              <li><a href="noticeList">공지사항</a></li>
-	                              <c:if test="${sessionScope.loginId != null}">
-	                              <li><a href="request">요청목록</a></li>   
-	                              </c:if>                           
-	                              <li><a href="#">칭찬하기</a></li>
-	                              <li><a href="suggestionList">건의하기</a></li>
-	                              <li><a href="#">편의시설</a></li>
-	                              </c:if>     
-	                           </ul>
-	                        </nav>
+                     <!-- Section -->
+                        <section>
+                           <header class="major">
+                              <a href="/index"><h2>Need Of Help</h2></a> 
+                           </header>    
+							
+						   <sec:authorize access="isAnonymous()">                     
+                                 <a href="/login?chk=1" class="button fit">로그인</a>  
+                           </sec:authorize>    
+                          
+                           <sec:authorize access="isAuthenticated()">
+                              <div class="mini-posts">     
+                                 <article>                         
+                                    <h3><sec:authentication property="principal.user.username"/> 님 환영합니다!!</h3>   
+                                 </article>   
+                              </div>   
+                              <ul class="actions">
+                                 <li>  
+                                    <form action="/logout" method="POST">
+                                    <sec:authorize access="!hasRole('ROLE_ADMIN')">
+                                    	<a href="/user/userDetail?userid=<sec:authentication property="principal.user.userid"/>" class="button">회원정보</a>
+                                    </sec:authorize>          
+										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+										<button class="button" type="submit">로그아웃</button>
+						   			</form>
+                                 </li>
+                              </ul>
+                           </sec:authorize>       
+                        </section>
+
+                     <!-- Menu -->
+                       <nav id="menu">
+                              <header class="major">
+                                 <h2>메뉴</h2>
+                              </header> 
+                              <ul>
+                                 <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                    <li><a href="/noticeList">공지 관리</a></li>
+                                    <li>
+                                       <span class="opener">회원 관리</span>
+                                       <ul>
+                                          <li><a href="/admin/userList">회원정보 관리</a></li>
+                                          <li><a href="#">블랙리스트 관리</a></li>
+                                       </ul>
+                                    </li>                              
+                                    <li><a href="/admin/matchingMgmt" id="matchingMgmt">매칭 관리</a></li>
+                                    <li><a href="#" id="matchingStats">매칭 통계</a></li>
+                                    <li><a href="#">예약 관리</a></li>
+                                 </sec:authorize>
+                                                
+                                 <sec:authorize access="permitAll">
+                                 <sec:authorize access="!hasRole('ROLE_ADMIN')">   
+                                 	<li><a href="/noticeList">공지사항</a></li>
+                                 	<sec:authorize access="hasRole('ROLE_USER')">
+                                 		<li><a href="/user/request">요청목록</a></li>   
+                                 	</sec:authorize>                         
+                                 	<li><a href="#">칭찬하기</a></li>
+                                 	<li><a href="/suggestionList">건의하기</a></li>
+                                 	<li><a href="#">편의시설</a></li>
+                                </sec:authorize>
+                                </sec:authorize>  
+                              </ul>
+                           </nav>
 			
 			<!-- Search -->
 				<section id="search" class="alt">

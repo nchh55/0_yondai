@@ -8,7 +8,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<link rel="stylesheet" href="resources/assets/css/main.css" /> 
+<link rel="stylesheet" href="/resources/assets/css/main2.css" /> 
 <script>
 	var map;
 	var markers = [];
@@ -67,18 +67,19 @@
 		deleteMarkers();
 		var icon = '';
 		
+		
 		$.each(resp, function(index, item){
-			if(item.request_flag == '일반'){
-				icon = 'resources/images/marker/marker_green.png';
-			}else if(item.request_flag == '처리중'){
-				icon = 'resources/images/marker/marker_orange.png';
+			if(item.request_flag == 'normal'){
+				icon = '/resources/images/marker/marker_red.png';
+			}else if(item.request_flag == 'completed'){
+				icon = '/resources/images/marker/marker_green.png';
 			}else{
-				icon = 'resources/images/marker/marker_red.png';
+				icon = '/resources/images/marker/marker_orange.png';
 			}
 			
-			var location = {lat: Number(item.request_location), lng: Number(item.support_location)};
+			var location = {lat: Number(item.req_x), lng: Number(item.req_y)};
 			var seq = item.requestseq;
-			alert(seq);
+			//alert(seq);
 			addMarker(location, seq, icon);
 		});
 		
@@ -107,24 +108,28 @@
         		//draggable: false,
         		icon: icon
         });
-        	marker.addEventListener('click', toggleBounce);
-       		/*
-        	marker.addEventListener('click', function() {
-       			matchingDetail(seq);
-       		});
-       		*/
+        /*
+         	marker.addListener('click', function(){
+					marker.setAnimation(google.maps.Animation.BOUNCE);
+					matchingDetail(seq);
+                }
+        	}); 
+       	*/
+         	marker.addListener('dblclick', function() {
+        		matchingDetail(seq);
+       		}); 
+       	
+	     	marker.addListener('click', function() {
+	            if (marker.getAnimation() !== null) {
+	                marker.setAnimation(null);
+	                map.setZoom(12);
+	            }else{
+	                marker.setAnimation(google.maps.Animation.BOUNCE);
+	                map.setZoom(14);
+	            }
+	   		}); 
        		
         	markers.push(marker);
-    }
-    
-    function toggleBounce() {
-        if (marker.getAnimation() !== null) {
-          marker.setAnimation(null);
-        } else {
-          marker.setAnimation(google.maps.Animation.BOUNCE);
-        }
-        
-        alert("마커 이벤트 테스트!!")
     }
     
     
@@ -135,6 +140,35 @@
         }
     }
     
+    function setMapSupport(map) {
+    	
+    	
+    }
+    
+/*     //마커 이벤트(바운스)
+    function toggleBounce() {
+        if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
+    } 
+*/
+
+/* 	function test(){
+	    if (marker.getAnimation() !== null) {
+	        marker.setAnimation(null);
+	      } else {
+	        marker.setAnimation(google.maps.Animation.BOUNCE);
+	      	
+	        $.ajax({
+	        	
+	        	
+	        });
+	      
+	      }
+	} */
+    
     //마커 지우기
 	function deleteMarkers() {
 		setMapOnAll(null);
@@ -143,12 +177,14 @@
     
 	///////////////////////////////////
     
+	
+	
 	function matchingDetail(resp){
 		var requestseq = resp;		
 		var url  = 'matchingDetail?requestseq='
 			url += requestseq;
 		
-		window.open(url, "매칭 상세정보", "width=600px, height=700px");
+		window.open(url, "매칭 상세정보", "width=600, height=750");
 	}
 		
 </script>
@@ -176,44 +212,44 @@
                <div id="map" class="inner"></div>
             </div>
 
-         <!-- Sidebar -->
-            <div id="sidebar">
+         <!-- Sidebar --> 
+            <div id="sidebar">    
                <div class="inner"> 
 				<!-- Title -->
 					<section align="center">
-					<a href="matchingMgmt" align="center"><h1>매칭 관리</h1></a>
-					<a href="index"><button type="button">끝내기(메인으로)</button></a>
+					<a href="/admin/matchingMgmt" align="center"><h1>매칭 관리</h1></a>
+					<a href="/index"><button type="button">끝내기(메인으로)</button></a>
 					</section>
 				<!-- 검색 콘솔  -->
 					<section>
-						<!-- 상태별 조회 -->
-						<form>
+						<form id="searchList" action="/admin/matchingList" method="GET">  
 							<table>
 								<tr>
-									<td><input type="date" name="pickDate" /></td>
-									<td><button type="button" class="button primary small" >조회하기</button>
-								<tr></tr>
-								<tr>
-									<td>
-										<select id="searchItem" name="searchItem">
-											<option value="0">자동해제</option>
-											<option value="1">1분마다</option>
-											<option value="5">5분마다</option>
-											<option value="10">10분마다</option>
-											<option value="15">15분마다</option>
-										</select>
-										<select id="mflag" name="request_flag">
-											<option value="전체" ${request_flag =='전체'?'selected' :'' }>전체</option>
-											<option value="일반" ${request_flag =='일반'?'selected' :'' }>일반</option>
-											<option value="처리중" ${request_flag =='처리중'?'selected' :'' }>처리중</option>
-											<option value="처리완료"  ${request_flag =='처리완료'?'selected' :'' }>처리완료</option>
-										</select>
-
+									<th>조회일자</th>
+									<td colspan="2">
+										<input type="date" id="searchDate" name="searchDate">
 									</td>
 								</tr>
 								<tr>
+									<th>검색조건</th>
 									<td>
-										<input type="text" name="searchWord">
+										<select id="searchItem" name="searchItem">
+											<option value="content">요청내용</option>
+											<option	value="id">아이디</option>
+										</select>
+									</td>
+									<td>
+										<input type="text" id="searchWord" name="searchWord">
+									</td>
+								<tr>
+									<th>매칭상태</th>
+									<td>
+										<select id="searchflag" name="searchFlag">
+											<option value="all" ${request_flag =='all'?'selected' :'' }>전체</option>
+											<option value="normal" ${request_flag =='normal'?'selected' :'' }>일반</option>
+											<option value="uncompleted" ${request_flag =='uncompleted'?'selected' :'' }>미완료</option>
+											<option value="completed"  ${request_flag =='completed'?'selected' :'' }>처리완료</option>
+										</select>
 									</td>
 									<td>
 										<button type="button" class="button icon solid fa-search small" >검색</button>
@@ -229,11 +265,11 @@
       </div>
 
    <!-- Scripts -->
-        <script src="assets/js/jquery.min.js"></script>
-        <script src="assets/js/browser.min.js"></script>
-        <script src="assets/js/breakpoints.min.js"></script>
-        <script src="assets/js/util.js"></script>
-        <script src="assets/js/main.js"></script>
+        <script src="/resources/assets/js/jquery.min.js"></script>
+        <script src="/resources/assets/js/browser.min.js"></script>
+        <script src="/resources/assets/js/breakpoints.min.js"></script>
+        <script src="/resources/assets/js/util.js"></script>
+        <script src="/resources/assets/js/main.js"></script>
 
 	    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 	    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOtVk3O8rzFAXRss8SE0LUODSpFy9tiL8&callback=initMap"></script>

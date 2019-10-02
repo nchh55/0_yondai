@@ -12,6 +12,7 @@ DROP TABLE reservations CASCADE CONSTRAINTS;
 DROP TABLE sugrereply CASCADE CONSTRAINTS;
 DROP TABLE suggreply CASCADE CONSTRAINTS;
 DROP TABLE suggestion CASCADE CONSTRAINTS;
+DROP TABLE user_auth CASCADE CONSTRAINTS;
 DROP TABLE tasukete_user CASCADE CONSTRAINTS;
 
 
@@ -49,20 +50,17 @@ CREATE SEQUENCE SEQ_sugrereply_sugrereplyseq INCREMENT BY 1 START WITH 1;
 
 /* Create Tables */
 
--- 블랙리스트
 CREATE TABLE blacklist
 (
 	-- 회원의 아이디
 	userid varchar2(50) NOT NULL,
-	-- 블랙리스트 내용
+	-- 블랙리스트를 한 이유
 	blacklist_contents varchar2(2000),
-	-- 블랙리스트 기간제한
-	blacklist_deadline varchar2(40),
-	PRIMARY KEY (userid)
+	-- 블랙리스트의 기간을 제한해서 기간이 지나가면 자동으로 화이트라인 시킨다.
+	blacklist_deadline varchar2(40)
 );
 
 
--- 칭찬
 CREATE TABLE compliment
 (
 	-- 칭찬 시퀀스
@@ -73,13 +71,11 @@ CREATE TABLE compliment
 	userid varchar2(50) NOT NULL,
 	-- 칭찬 내용
 	compliment_contents varchar2(2000) NOT NULL,
-	-- 칭찬 일시
 	compliment_date varchar2(40) NOT NULL,
 	PRIMARY KEY (complimentseq)
 );
 
 
--- 칭찬댓글
 CREATE TABLE compreply
 (
 	-- 칭찬 시퀀스
@@ -96,7 +92,6 @@ CREATE TABLE compreply
 );
 
 
--- 칭찬대댓글
 CREATE TABLE comrereply
 (
 	-- 칭찬 대댓글 시퀀스
@@ -113,7 +108,6 @@ CREATE TABLE comrereply
 );
 
 
--- 공지
 CREATE TABLE notice
 (
 	-- 공지시퀀스
@@ -130,10 +124,9 @@ CREATE TABLE notice
 );
 
 
--- 신고
 CREATE TABLE report
 (
-	-- reportseq
+	-- 신고 시퀀스
 	reportseq number NOT NULL,
 	-- 신고 제목
 	report_title varchar2(200) NOT NULL,
@@ -147,7 +140,6 @@ CREATE TABLE report
 );
 
 
--- 요청
 CREATE TABLE request
 (
 	-- 요청시퀀스
@@ -158,25 +150,24 @@ CREATE TABLE request
 	userid varchar2(50) NOT NULL,
 	-- 지원자 아이디
 	support_id varchar2(50),
-	-- 요청자의 위치정보
-	request_location varchar2(20),
-	-- 지원자의 위치정보
-	support_location varchar2(20),
+	-- 요청자위치_X
+	req_x varchar2(20),
+	-- 요청자위치_Y
+	req_y varchar2(20),
+	-- 지원자위치_X
+	supp_x varchar2(20),
+	-- 지원자위치_Y
+	supp_y varchar2(20),
 	-- 요청 일시
 	request_date varchar2(40),
 	-- 완료 일시
 	completion_date varchar2(40),
-	-- 장애인 여부
-	disabled varchar2(10) NOT NULL,
-	-- 임신 여부
-	pregnancy varchar2(10) NOT NULL,
 	-- 요청 상태
 	request_flag varchar2(20) DEFAULT '0',
 	PRIMARY KEY (requestseq)
 );
 
 
--- 예약
 CREATE TABLE reservations
 (
 	-- 예약 시퀀스
@@ -195,22 +186,21 @@ CREATE TABLE reservations
 );
 
 
--- 건의
 CREATE TABLE suggestion
 (
-	-- 건의시퀀스
+	-- 민원시퀀스
 	suggestionseq number NOT NULL,
 	-- 건의 제목
 	suggestion_title varchar2(200) NOT NULL,
 	-- 회원의 아이디
 	userid varchar2(50) NOT NULL,
-	-- 건의 내용
+	-- 건의원 내용
 	suggestion_contents varchar2(2000) NOT NULL,
 	-- 건의 결과
 	suggestion_result varchar2(2000),
-	-- 접수 일시
+	-- 접수 일자
 	reception_date varchar2(40) NOT NULL,
-	-- 처리 일시
+	-- 처리 일자
 	completion_date varchar2(40),
 	-- 진행 상태
 	progress_flag varchar2(10),
@@ -218,12 +208,11 @@ CREATE TABLE suggestion
 );
 
 
--- 건의댓글
 CREATE TABLE suggreply
 (
 	-- 건의 댓글 시퀀스
 	suggreplyseq number NOT NULL,
-	-- 건의시퀀스
+	-- 민원시퀀스
 	suggestionseq number NOT NULL,
 	-- 회원의 아이디
 	userid varchar2(50) NOT NULL,
@@ -235,7 +224,6 @@ CREATE TABLE suggreply
 );
 
 
--- 건의대댓글
 CREATE TABLE sugrereply
 (
 	-- 건의 대댓글 시퀀스
@@ -252,13 +240,12 @@ CREATE TABLE sugrereply
 );
 
 
--- 회원
 CREATE TABLE tasukete_user
 (
 	-- 회원의 아이디
 	userid varchar2(50) NOT NULL,
-	-- 회원의 가상번호
-	uservnum varchar2(50),
+	-- 회원의 비밀번호
+	userpwd varchar2(100) NOT NULL,
 	-- 회원의 이름
 	username varchar2(50) NOT NULL,
 	-- 회원의 생일
@@ -267,11 +254,30 @@ CREATE TABLE tasukete_user
 	userphone varchar2(50) NOT NULL,
 	-- 장애인 여부
 	disabled varchar2(10) NOT NULL,
+	-- 회원위치_X
+	user_x varchar2(20),
+	-- 회원위치_Y
+	user_y varchar2(20),
 	-- 칭찬 횟수
 	compliment_count number DEFAULT 0,
 	-- 매칭에 대한 상태정보
 	matching_flag varchar2(20) DEFAULT '0',
+	-- 상태A
+	statA varchar2(20),
+	-- 상태B
+	statB varchar2(20),
+	-- 상태C
+	statC varchar2(20),
 	PRIMARY KEY (userid)
+);
+
+
+CREATE TABLE user_auth
+(
+	-- 회원의 아이디
+	userid varchar2(50) NOT NULL,
+	-- 회원의 권한
+	auth varchar2(20)
 );
 
 
@@ -350,6 +356,13 @@ ALTER TABLE reservations
 
 ALTER TABLE suggestion
 	ADD CONSTRAINT suggestion_userid_fk FOREIGN KEY (userid)
+	REFERENCES tasukete_user (userid)
+	ON DELETE CASCADE
+;
+
+
+ALTER TABLE user_auth
+	ADD CONSTRAINT userauth_userid_fk FOREIGN KEY (userid)
 	REFERENCES tasukete_user (userid)
 	ON DELETE CASCADE
 ;

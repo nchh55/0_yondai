@@ -11,12 +11,12 @@
 			,request_contents
 			,userid
 			,support_id
-			,request_location
-			,support_location
+			,req_x
+			,req_y
+			,supp_x
+			,supp_y
 			,request_date
 			,completion_date
-			,disabled
-			,pregnancy
 			,request_flag
 		FROM request
 		<if test="searchItem != null">

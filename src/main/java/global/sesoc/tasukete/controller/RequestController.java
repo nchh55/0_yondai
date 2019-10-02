@@ -44,7 +44,7 @@ public class RequestController {
 	
 	
 		// 검색, 첫화면
-		@RequestMapping(value="/request", method=RequestMethod.GET)
+		@RequestMapping(value="/user/request", method=RequestMethod.GET)
 		public String requestList(
 				@RequestParam(value="searchItem",  defaultValue="userid") String searchItem, 
 				@RequestParam(value="searchWord",  defaultValue="")      String searchWord, 
@@ -66,7 +66,7 @@ public class RequestController {
 			return "request/request";
 		}
 		//요청목록디테일
-		@RequestMapping(value="/requestDetail", method=RequestMethod.GET)
+		@RequestMapping(value="/user/requestDetail", method=RequestMethod.GET)
 		public String requestDetail(int requestseq, Model model) {
 			Request request = repository.selectOne2(requestseq);
 

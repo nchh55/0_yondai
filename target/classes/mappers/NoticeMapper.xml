@@ -21,12 +21,12 @@
 					,notice_date
 				FROM notice
 				<if test="searchItem !='' or searchItem != null">
-				WHERE ${searchItem} LIKE '%'||#{searchWord}||'%' 
+					WHERE ${searchItem} LIKE '%'||#{searchWord}||'%' 
 				</if>
 				ORDER BY noticeseq DESC
 			) n
 		)
-		WHERE rnum between #{srow} and #{erow}
+		WHERE rnum between #{sRow} and #{eRow}
 	</select>
 	
 	<!-- 공지사항 카운트 (전체) -->
@@ -34,7 +34,7 @@
 		SELECT count(*)
 		FROM notice
 		<if test="searchItem != null">
-		WHERE ${searchItem} LIKE '%'||#{searchWord}||'%'
+			WHERE ${searchItem} LIKE '%'||#{searchWord}||'%'
 		</if>
 	</select>
 	

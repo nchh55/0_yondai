@@ -8,32 +8,73 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<link rel="stylesheet" href="resources/assets/css/main2.css" /> 
+<link rel="stylesheet" href="/resources/assets/css/main2.css" /> 
 <script>
+	/* 구글 맵용 공용변수 선언*/
 	var map;
+	var mapOptions;
 	var markers = [];
-
+	
+	
 	$(function(){
 		
-		map = new google.maps.Map(document.getElementById('map'), {
-	    	zoom: 12,
-	    	center: {lat: 37.551818 , lng: 126.990915}
-	  	});
-
-	 	matching();		
-	 	
-	 	$(document).on("change", "#mflag", matching);
+		initMap(); // 구글맵 로드 2
+		matching(); // 요청테이블 리스트 불러오기
+		
+		$(document).on("change", "#searchFlag", matching);
+	
 	})
 	
+	//구글맵 로드 2 
+	function initMap(){
+		// 맵 바탕 띄울때 옵션 (center:중심좌표 / zoom:배율)
+		mapOptions = {
+			center: {lat: 37.551818 , lng: 126.990915}
+			,zoom: 12
+		};
+		
+		map = new google.maps.Map(document.getElementById('map'), mapOptions);
+	}
 	
+	
+	// 배열에 마커 추가하기 
+	function addMarker(location, icon, seq) {
+	    var marker = new google.maps.Marker({
+	    		position: location
+	    		,map: map
+	    		//,animation: google.maps.Animation.BOUNCE // 마커 통통 튀게하기
+	    		,draggable: false
+	    		,icon: icon
+	    });
+	    
+     	marker.addListener('click', function() {
+    		matchingDetail(seq);
+   		}); 
+   		
+	    markers.push(marker);
+	} 
+	
+	// 배열에 있는 모든 마커 지도에 표시하기
+    function setMapOnAll(map) {
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(map);
+        }
+    }
+	
+ 	// 배열에 있는 모든 마커 삭제하기
+	function deleteMarkers() {
+		setMapOnAll(null);
+	    markers = [];
+	}
+	
+	//////////////////////////////////////////////
 	
 	function matching(){
-		//alert("매칭 메소드 작동!");
-		var request_flag = $("#mflag").val();
+		var request_flag = $("#searchFlag").val();
 		
 		$.ajax({
 			type:'GET'
-			,url:'matchingList'
+			,url:'/admin/matchingList'
 			,data: {"request_flag": request_flag}
 			,success: 
 				matchingList
@@ -41,7 +82,8 @@
 	}
 	
 	function matchingList(resp){
-		//alert("matchingList 메소드 작동");
+		deleteMarkers();
+		
 		var tag  = '<tr>'
 			tag += '<th>요청일시</th>'
 			tag += '<th>요청내용</th>'
@@ -58,89 +100,37 @@
 			tag += '</td>'
 			tag += '<td>'+item.userid+'</td>'
 			tag += '<td>'+item.request_flag+'</td>'
-			tag += '<td><input type="checkbox"></td>'
 			tag += '</tr>'
-		});
+		
+			var location = {lat: Number(item.req_x), lng: Number(item.req_y)};
+			var icon = '';
+			var request_flag = item.request_flag;
 			
-		$("#matchingTable").html(tag);
-		
-		deleteMarkers();
-		var icon = '';
-		
-		$.each(resp, function(index, item){
-			if(item.request_flag == '일반'){
-				icon = 'resources/images/marker/marker_green.png';
-			}else if(item.request_flag == '처리중'){
-				icon = 'resources/images/marker/marker_orange.png';
+			if(request_flag == 'normal'){
+				icon = '/resources/images/marker/marker_red.png';
+			}else if(request_flag == 'completed'){
+				icon = '/resources/images/marker/marker_green.png';
 			}else{
-				icon = 'resources/images/marker/marker_red.png';
+				icon = '/resources/images/marker/marker_orange.png';
 			}
 			
-			var location = {lat: Number(item.request_location), lng: Number(item.support_location)};
 			var seq = item.requestseq;
-			//alert(seq);
-			addMarker(location, seq, icon);
+			addMarker(location, icon, seq);
+			
 		});
+		$("#matchingTable").empty();
+		$("#matchingTable").html(tag);
 		
-		initMap();
-		
+		setMapOnAll(map);
+
 	}
 	
-	//구글맵 지도 + 마커 띄우기
-    function initMap() {
-		//alert("initMap 메소드 작동");
-		
-        var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        setMapOnAll(map);
-/*
-	    var markerCluster = new MarkerClusterer(map, markers,
-	            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-*/
-	}
-       
 	
-    function addMarker(location, seq, icon) {
-        var marker = new google.maps.Marker({
-        		position: location,
-        		map: map,
-        		//animation: google.maps.Animation.toggleBounce,
-        		//draggable: false,
-        		icon: icon
-        });
-        /*
-         	marker.addListener('click', function(){
-					marker.setAnimation(google.maps.Animation.BOUNCE);
-					matchingDetail(seq);
-                }
-        	}); 
-       	*/
-         	marker.addListener('click', function() {
-        		matchingDetail(seq);
-       		}); 
-       		
-       		
-        	markers.push(marker);
-    }
-    
-    
-    //배열에 있는 마커 띄우기 
-    function setMapOnAll(map) {
-        for (var i = 0; i < markers.length; i++) {
-          markers[i].setMap(map);
-        }
-    }
-    
-    //마커 지우기
-	function deleteMarkers() {
-		setMapOnAll(null);
-	    markers = [];
-	}
-    
 	///////////////////////////////////
     
 	function matchingDetail(resp){
 		var requestseq = resp;		
-		var url  = 'matchingDetail?requestseq='
+		var url  = '/admin/matchingDetail?requestseq='
 			url += requestseq;
 		
 		window.open(url, "매칭 상세정보", "width=600, height=750");
@@ -176,8 +166,8 @@
                <div class="inner"> 
 				<!-- Title -->
 					<section align="center">
-					<a href="matchingMgmt" align="center"><h1>매칭 관리</h1></a>
-					<a href="index"><button type="button">끝내기(메인으로)</button></a>
+					<a href="/admin/matchingMgmt" align="center"><h1>매칭 관리</h1></a>
+					<a href="/index"><button type="button">끝내기(메인으로)</button></a>
 					</section>
 				<!-- 검색 콘솔  -->
 					<section>
@@ -190,18 +180,11 @@
 								<tr></tr>
 								<tr>
 									<td>
-										<select id="searchItem" name="searchItem">
-											<option value="0">자동해제</option>
-											<option value="1">1분마다</option>
-											<option value="5">5분마다</option>
-											<option value="10">10분마다</option>
-											<option value="15">15분마다</option>
-										</select>
-										<select id="mflag" name="request_flag">
-											<option value="전체" ${request_flag =='전체'?'selected' :'' }>전체</option>
-											<option value="일반" ${request_flag =='일반'?'selected' :'' }>일반</option>
-											<option value="처리중" ${request_flag =='처리중'?'selected' :'' }>처리중</option>
-											<option value="처리완료"  ${request_flag =='처리완료'?'selected' :'' }>처리완료</option>
+										<select id="searchFlag" name="searchFlag">
+											<option value="all" ${request_flag =='all'?'selected' :'' }>전체</option>
+											<option value="normal" ${request_flag =='normal'?'selected' :'' }>일반</option>
+											<option value="uncompleted" ${request_flag =='uncompleted'?'selected' :'' }>미완료</option>
+											<option value="completed"  ${request_flag =='completed'?'selected' :'' }>처리완료</option>
 										</select>
 
 									</td>
@@ -224,11 +207,11 @@
       </div>
 
    <!-- Scripts -->
-        <script src="assets/js/jquery.min.js"></script>
-        <script src="assets/js/browser.min.js"></script>
-        <script src="assets/js/breakpoints.min.js"></script>
-        <script src="assets/js/util.js"></script>
-        <script src="assets/js/main.js"></script>
+        <script src="/resources/assets/js/jquery.min.js"></script>
+        <script src="/resources/assets/js/browser.min.js"></script>
+        <script src="/resources/assets/js/breakpoints.min.js"></script>
+        <script src="/resources/assets/js/util.js"></script>
+        <script src="/resources/assets/js/main.js"></script>
 
 	    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 	    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOtVk3O8rzFAXRss8SE0LUODSpFy9tiL8&callback=initMap"></script>

@@ -16,13 +16,13 @@ public class NoticeRepository {
 	SqlSession session;
 	
 	//공지사항 조회(전체)
-	public List<Notice> selectAll(String searchItem, String searchWord, int srow, int erow) {
+	public List<Notice> selectAll(String searchItem, String searchWord, int sRow, int eRow) {
 		NoticeMapper mapper = session.getMapper(NoticeMapper.class);
 		Map<String, Object> map = new HashMap<>();
 		map.put("searchItem", searchItem);
 		map.put("searchWord", searchWord);
-		map.put("srow", srow);
-		map.put("erow", erow);
+		map.put("sRow", sRow);
+		map.put("eRow", eRow);
 
 		List<Notice> list = mapper.selectAll(map);
 		
@@ -30,13 +30,11 @@ public class NoticeRepository {
 	}
 	
 	//공지사항 카운트(전체)
-	public int getNoticeCount(String searchItem, String searchWord, int srow, int erow) {
+	public int getNoticeCount(String searchItem, String searchWord) {
 		NoticeMapper mapper = session.getMapper(NoticeMapper.class);
 		Map<String, Object> map = new HashMap<>();
 		map.put("searchItem", searchItem);
 		map.put("searchWord", searchWord);
-		map.put("srow", srow);
-		map.put("erow", erow);
 		
 		int total = mapper.getNoticeCount(map);
 		

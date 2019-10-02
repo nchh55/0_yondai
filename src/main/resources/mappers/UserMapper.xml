@@ -21,6 +21,7 @@
 		INSERT INTO Tasukete_user
 		(
 			userid
+			,userpwd
 			,username
 			,userbirth
 			,userphone
@@ -30,6 +31,7 @@
 		VALUES
 		(
 			#{userid}
+			,#{userpwd}
 			,#{username}
 			,#{userbirth}
 			,#{userphone}
@@ -47,21 +49,26 @@
 			(	
 				SELECT
 					userid
-					,uservnum
+					,userpwd
 					,username
 					,userbirth
 					,userphone
 					,disabled
+					,user_x
+					,user_y
 					,compliment_count
 					,matching_flag
+					,statA
+					,statB
+					,statC
 				FROM tasukete_user
 				<if test="searchItem !='' or searchItem != null">
-				WHERE ${searchItem} LIKE '%'||#{searchWord}||'%' 
+					WHERE ${searchItem} LIKE '%'||#{searchWord}||'%' 
 				</if>
-				ORDER BY username
+				ORDER BY userid
 			) n
 		)
-		WHERE rnum between #{srow} and #{erow}	
+		WHERE rnum between #{sRow} and #{eRow}	
 	</select>
 	
 	<!-- 회원 카운트(전체) -->
@@ -102,5 +109,53 @@
 		WHERE
 			userid = #{userid}
 	</delete>
+	<!-- auth -->
+	<insert id="auth" >
+		insert into user_auth
+		(
+			userid
+			,auth
+		)
+		values
+		(
+			#{userid}
+			,'ROLE_USER'
+		)
+	</insert>
+	
+	
+	<resultMap type="Tasukete_user" id="memberMap">
+		<id property="userid" column="userid"/>
+		<result property="userid" column="userid"/>
+		<result property="userpwd" column="userpwd"/>
+		<result property="username" column="username"/>
+		<result property="userbirth" column="userbirth"/>
+		<result property="userphone" column="userphone"/>
+		<result property="disabled" column="disabled"/>
+		<result property="user_x" column="user_x"/>
+		<result property="user_y" column="user_y"/>
+		<result property="compliment_count" column="compliment_count"/>
+		<result property="matching_flag" column="matching_flag"/>
+		<result property="statA" column="statA"/>
+		<result property="statB" column="statB"/>
+		<result property="statC" column="statC"/>
+		<collection property="authList" resultMap="authMap">
+		</collection>
+	</resultMap>
+	
+	<resultMap type="User_auth" id="authMap">
+		<result property="userid" column="userid"/>
+		<result property="auth" column="auth"/>
+	</resultMap>
+	
+	<select id="read" resultMap="memberMap">
+		SELECT
+		  tuser.userid, userpwd, username, userbirth, userphone, disabled
+		  , user_x, user_y, compliment_count, matching_flag, statA, statB, statC, auth
+		FROM
+			Tasukete_user tuser LEFT OUTER JOIN User_auth auth on tuser.userid = auth.userid
+		WHERE
+			tuser.userid = #{userid}
+	</select>
 	
 </mapper>

@@ -1,14 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE HTML>
 <html>
 <head>
 <title>TASUKETE - YONDAI</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel="stylesheet" href="resources/assets/css/main.css" />
-<script>
+<link rel="stylesheet" href="/resources/assets/css/main.css" />
+<script>    
 
 </script>     
 </head>
@@ -23,15 +24,22 @@
 
                   <!-- Header -->
                      <header id="header">
-                        <a href="index" class="logo"><strong>TASUKETE</strong> Help Communication</a>
-                     </header>
+                           <a href="index" class="logo"><strong>TASUKETE </strong> Help Communication</a>
+                           
+                           <sec:authorize access="hasRole('ROLE_USER')">
+                           <ul class="icons">
+                           <li><a href="#" id="report" class="button large">신고하기</a></li>  
+                           </ul>
+                           </sec:authorize>  
+                           
+                        </header>
                                                          
                   <!-- Section -->
                      <section>   
                   <!-- Form --> 
-                  <div class="box">                                     
+                                                      
                      <h2>회원정보(수정)</h2>  
-                     	<form method="POST" action="userUpdate">
+                     	<form id="userUpdateForm" method="POST" action="/user/userUpdate">
                         	<div class="row gtr-uniform">
                         		<div class="col-8">    
                               		<input type="text" name="userid" id="userid" value="${userid}" readonly="readonly"/> 
@@ -43,7 +51,7 @@
                               		<input type="text" name="userphone" id="userphone" value="${userphone}"/> 
                           		</div>
                            		<div class="col-5">      
-                             		BIRTH : &nbsp<input type="date" name="userbirth" id="userbirth" value="${userbirth}"" />
+                             		BIRTH : <input type="date" name="userbirth" id="userbirth" value="${userbirth}"" />
                            		</div>                                                            
                            <!-- Break -->
                            		<div> 장애 유무
@@ -65,7 +73,7 @@
 	                              		<input type="radio" id="demo-priority-normal" name="disabled" value="NO" checked >
 	                              		<label for="demo-priority-normal">No</label> 
                               		</c:if>
-                           		</div> &nbsp  
+                           		</div> 
                            		<div>
                            			<label>  
                            			</label> 
@@ -73,83 +81,86 @@
                             	<div class="col-11">
                             	</div>
                            		<!-- Break -->
-                           		<div class="col-8">
-                              		<textarea name="remark" id="remark" placeholder="기타 특이사항" rows="6"></textarea>
-                          		</div>
-                           		<!-- Break -->
                            		<div class="col-12">
                               		<ul class="actions">
                               			<li><input type="submit" value="수정 완료" class="primary" /></li>
-                              			<c:if test="${sessionScope.loginId == 'admin' }">
-                              				<li><a href="userList" class="button">수정 취소</a></li>
-                              			</c:if>
-                              			<c:if test="${sessionScope.loginId != 'admin' }">
-                                 			<li><a href="index" class="button">수정 취소</a></li>
-                              			</c:if>
+                              			<li><a href="/user/userDetail?userid=${userid}" class="button big">수정 취소</a></li>
                               		</ul>
-                           		</div>
-                        	</div>  
+                           		</div>    
+                        	</div> 
+                        	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" /> 
                      	</form>  
                   </section>
                </div>
             </div>
 
-         <!-- Sidebar -->
-            <div id="sidebar">
-               <div class="inner">
+            <!-- Sidebar -->
+               <div id="sidebar">
+                  <div class="inner">
 
-                  <!-- Section -->
-                      <section>
-                         <header class="major">
-                            <a href="index2"><h2>Need Of Help</h2></a> 
-                         </header>
-                         <c:if test="${sessionScope.loginId == null }">                        
-                               <a href="login" class="button fit">로그인</a>  
-                         </c:if>
-                         <c:if test="${sessionScope.loginId != null }">
-                            <div class="mini-posts">
-                               <article> 
-                                  <h3>${sessionScope.loginName} 님 환영합니다!!</h3>   
-                               </article>   
-                            </div>
-                            <ul class="actions">
-                               <li>
-                                  <a href="userDetail?userid=${sessionScope.loginId}" class="button">회원정보</a>
-                                  <a href="logout" class="button">로그아웃</a>
-                               </li>
-                            </ul>
-                         </c:if>   
-                      </section>
-                  <!-- Menu -->
-                      <nav id="menu">
+                     <!-- Section -->
+                        <section>
                            <header class="major">
-                              <h2>메뉴</h2>
-                           </header> 
-                           <ul>
-                              <c:if test="${sessionScope.loginId == 'admin'}">
-                                 <li><a href="noticeList">공지 관리</a></li>
-                                 <li>
-                                    <span class="opener">회원 관리</span>
-                                    <ul>
-                                       <li><a href="userList">회원정보 관리</a></li>
-                                       <li><a href="#">블랙리스트 관리</a></li>
-                                    </ul>
-                                 </li>                              
-                                 <li><a href="matchingMgmt" id="matchingMgmt">매칭 관리</a></li>
-                                 <li><a href="#" id="matchingStats">매칭 통계</a></li>
-                                 <li><a href="suggestionList">건의 관리</a></li>
-                              </c:if>
-                              <c:if test="${sessionScope.loginId != 'admin'}">
-	                              <li><a href="noticeList">공지사항</a></li>
-	                              <c:if test="${sessionScope.loginId != null}">
-	                              	<li><a href="request">요청목록</a></li>   
-	                              </c:if>                           
-	                              <li><a href="#">칭찬하기</a></li>
-	                              <li><a href="suggestionList">건의하기</a></li>
-	                              <li><a href="#">편의시설</a></li>
-                              </c:if>     
-                           </ul>
-                        </nav>
+                              <a href="/index"><h2>Need Of Help</h2></a> 
+                           </header>
+							
+						   <sec:authorize access="isAnonymous()">                     
+                                 <a href="login" class="button fit">로그인</a>  
+                           </sec:authorize>
+                          
+                           <sec:authorize access="isAuthenticated()">
+                              <div class="mini-posts">     
+                                 <article>                         
+                                    <h3><sec:authentication property="principal.user.username"/> 님 환영합니다!!</h3>   
+                                 </article>   
+                              </div>   
+                              <ul class="actions">
+                                 <li>  
+                                    <form action="/logout" method="POST">
+                                    <sec:authorize access="!hasRole('ROLE_ADMIN')">
+                                    	<a href="/user/userDetail?userid=<sec:authentication property="principal.user.userid"/>" class="button">회원정보</a>
+                                    </sec:authorize>
+										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+										<button class="button" type="submit">로그아웃</button>
+						   			</form>
+                                 </li>
+                              </ul>
+                           </sec:authorize>
+                        </section>
+
+                     <!-- Menu -->
+                       <nav id="menu">
+                              <header class="major">
+                                 <h2>메뉴</h2>
+                              </header> 
+                              <ul>
+                                 <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                    <li><a href="/noticeList">공지 관리</a></li>
+                                    <li>
+                                       <span class="opener">회원 관리</span>
+                                       <ul>
+                                          <li><a href="/admin/userList">회원정보 관리</a></li>
+                                          <li><a href="#">블랙리스트 관리</a></li>
+                                       </ul>
+                                    </li>                              
+                                    <li><a href="/admin/matchingMgmt" id="matchingMgmt">매칭 관리</a></li>
+                                    <li><a href="#" id="matchingStats">매칭 통계</a></li>
+                                    <li><a href="#">예약 관리</a></li>
+                                 </sec:authorize>
+                                                
+                                 <sec:authorize access="permitAll">
+                                 <sec:authorize access="!hasRole('ROLE_ADMIN')">   
+                                 	<li><a href="/noticeList">공지사항</a></li>
+                                 	<sec:authorize access="hasRole('ROLE_USER')">
+                                 		<li><a href="/user/request">요청목록</a></li>   
+                                 	</sec:authorize>                         
+                                 	<li><a href="#">칭찬하기</a></li>
+                                 	<li><a href="/suggestionList">건의하기</a></li>
+                                 	<li><a href="#">편의시설</a></li>
+                                </sec:authorize>
+                                </sec:authorize>  
+                              </ul>
+                           </nav>
                   
                   <!-- Search -->       
                      <section id="search" class="alt">
@@ -180,11 +191,11 @@
             </div>
       </div>
 
-   <!-- Scripts -->
-      <script src="assets/js/jquery.min.js"></script>
-      <script src="assets/js/browser.min.js"></script>
-      <script src="assets/js/breakpoints.min.js"></script>
-      <script src="assets/js/util.js"></script>
-      <script src="assets/js/main.js"></script>
+      <!-- Scripts -->
+         <script src="/resources/assets/js/jquery.min.js"></script>
+         <script src="/resources/assets/js/browser.min.js"></script>
+         <script src="/resources/assets/js/breakpoints.min.js"></script>
+         <script src="/resources/assets/js/util.js"></script>
+         <script src="/resources/assets/js/main.js"></script>
 </body>
 </html>

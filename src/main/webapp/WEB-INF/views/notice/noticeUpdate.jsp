@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -9,17 +10,19 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<link rel="stylesheet" href="resources/assets/css/main.css" />
+<link rel="stylesheet" href="/resources/assets/css/main.css" />
 <script>
 	//신고하기
 	$(function(){		 
 		$("#report").on("click", report);
+	
 	});
 	
 	function report(){
 		alert("신고하기"); 
 		$(".content").load("resources/report2.jsp");         		
 	}
+	
 </script>     
 </head>
 <body class="is-preload">
@@ -34,11 +37,9 @@
                   <!-- Header -->
                      <header id="header">
                         <a href="index" class="logo"><strong>TASUKETE</strong> Help Communication</a>
-                        <c:if test="${sessionScope.loginId != null }">
 						<ul class="icons">
 						<li><a href="#" id="report" class="button large">신고하기</a></li>  
 						</ul>
-						</c:if>
                      </header>
                                                          
                   <!-- Section -->
@@ -46,7 +47,7 @@
                   <!-- Form --> 
                   <div class="box">                                     
                      <h2>공지사항</h2>  
-                     	<form method="POST" action="noticeUpdate">
+                     	<form id="noticeUpdateForm" method="POST" action="/admin/noticeUpdate">
                         	<div class="row gtr-uniform">
                         		<div class="col-1">
                         			<input type="hidden" name="noticeseq" id="noticeseq" value="${noticeseq}">
@@ -54,11 +55,13 @@
                         	    <div class="col-3"> 
                               		작성자(ID)<input type="text" name="userid" id="userid" value="${userid}" readonly="readonly" /> 
                           		</div>
+                          		<div class="col-3">
+                          			작성일시<input type="text" value="${notice_date}" /> 
+                          		</div>
                        	    	<div class="col-3">      
-                             		작성일자<input type="date" name="notice_date" id="notice_date" value="${notice_date}" />
-                 
+                             		수정일시<input type="text" name="notice_date" id="notice_date" value="<fmt:formatDate value="${today}" pattern="yyyy-MM-dd (HH:mm)"/>" readonly="readonly"/>
                            		</div>
-                          		<div class="col-5"></div>
+                          		<div class="col-2"></div>
                         	    <!--  -->
                         	    <div class="col-1"></div>  
                         	    <div class="col-10">   
@@ -68,83 +71,94 @@
                            		<!--  -->
                            		<div class="col-1"></div>
                            		<div class="col-10">   
-                              		내용<textarea name="notice_contents" id="notice_contents" rows="10">${notice_contents}</textarea>
+                              		내용<textarea name="notice_contents" id="notice_contents" rows="10" style="resize: none;">${notice_contents}</textarea>
                           		</div>
                           		<div class="col-1"></div>
                           		<!--  -->
-                          		<div class="col-7"></div>
-                           		<div class="col-3">
+                          		<div class="col-4"></div>
+                           		<div class="col-6">
                               		<ul class="actions">
-                              			<c:if test="${sessionScope.loginId == 'admin' }">
-                                 			<li><input type="submit" value="수정 완료" class="primary" /></li>
-                                 		</c:if>
-                                 		<li><a href="noticeList" class="button">수정 취소</a></li>
+                              			<li><a href="/admin/noticeDelete?noticeseq=${noticeseq}" class="button primary">삭제하기</a></li>
+                                 		<li><input type="submit" value="수정 완료" class="primary" /></li>
+                                 		<li><a href="/noticeDetail?noticeseq=${noticeseq}" class="button big">수정 취소</a></li>
                               		</ul>
                            		</div>
                            		<div class="col-1"></div>
                         	</div>  
+                        	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                      	</form>
                      </div>  
                   </section>
                </div>
             </div>
 
-         <!-- Sidebar -->
-            <div id="sidebar">
-               <div class="inner">
+        <!-- Sidebar -->
+               <div id="sidebar">
+                  <div class="inner">
 
-                  <!-- Section -->
-                      <section>
-                         <header class="major">
-                            <a href="index2"><h2>Need Of Help</h2></a> 
-                         </header>
-                         <c:if test="${sessionScope.loginId == null }">                        
-                               <a href="login" class="button fit">로그인</a>  
-                         </c:if>
-                         <c:if test="${sessionScope.loginId != null }">
-                            <div class="mini-posts">
-                               <article> 
-                                  <h3>${sessionScope.loginName} 님 환영합니다!!</h3>   
-                               </article>   
-                            </div>
-                            <ul class="actions">
-                               <li>
-                                  <a href="userDetail?userid=${sessionScope.loginId}" class="button">회원정보</a>
-                                  <a href="logout" class="button">로그아웃</a>
-                               </li>
-                            </ul>
-                         </c:if>   
-                      </section>
-                  <!-- Menu -->
-                      <nav id="menu">
+                     <!-- Section -->
+                        <section>
                            <header class="major">
-                              <h2>메뉴</h2>
-                           </header> 
-                           <ul>
-                              <c:if test="${sessionScope.loginId == 'admin'}">
-                                 <li><a href="noticeList">공지 관리</a></li>
-                                 <li>
-                                    <span class="opener">회원 관리</span>
-                                    <ul>
-                                       <li><a href="userList">회원정보 관리</a></li>
-                                       <li><a href="#">블랙리스트 관리</a></li>
-                                    </ul>
-                                 </li>                              
-                                 <li><a href="matchingMgmt" id="matchingMgmt">매칭 관리</a></li>
-                                 <li><a href="#" id="matchingStats">매칭 통계</a></li>
-                                 <li><a href="suggestionList">건의 관리</a></li>
-                              </c:if>
-                              <c:if test="${sessionScope.loginId != 'admin'}">
-	                              <li><a href="noticeList">공지사항</a></li>
-	                              <c:if test="${sessionScope.loginId != null}">
-	                              	<li><a href="request">요청목록</a></li>   
-	                              </c:if>                           
-	                              <li><a href="#">칭찬하기</a></li>
-	                              <li><a href="suggestionList">건의하기</a></li>
-	                              <li><a href="#">편의시설</a></li>
-                              </c:if>     
-                           </ul>
-                        </nav>
+                              <a href="/index"><h2>Need Of Help</h2></a> 
+                           </header>    
+							
+						   <sec:authorize access="isAnonymous()">                     
+                                 <a href="/login?chk=1" class="button fit">로그인</a>  
+                           </sec:authorize>    
+                          
+                           <sec:authorize access="isAuthenticated()">
+                              <div class="mini-posts">     
+                                 <article>                         
+                                    <h3><sec:authentication property="principal.user.username"/> 님 환영합니다!!</h3>   
+                                 </article>   
+                              </div>   
+                              <ul class="actions">
+                                 <li>  
+                                    <form action="/logout" method="POST">
+                                    <sec:authorize access="!hasRole('ROLE_ADMIN')">
+                                    	<a href="/user/userDetail?userid=<sec:authentication property="principal.user.userid"/>" class="button">회원정보</a>
+                                    </sec:authorize>          
+										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+										<button class="button" type="submit">로그아웃</button>
+						   			</form>
+                                 </li>
+                              </ul>
+                           </sec:authorize>       
+                        </section>
+
+                     <!-- Menu -->
+                       <nav id="menu">
+                              <header class="major">
+                                 <h2>메뉴</h2>
+                              </header> 
+                              <ul>
+                                 <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                    <li><a href="/noticeList">공지 관리</a></li>
+                                    <li>
+                                       <span class="opener">회원 관리</span>
+                                       <ul>
+                                          <li><a href="/admin/userList">회원정보 관리</a></li>
+                                          <li><a href="#">블랙리스트 관리</a></li>
+                                       </ul>
+                                    </li>                              
+                                    <li><a href="/admin/matchingMgmt" id="matchingMgmt">매칭 관리</a></li>
+                                    <li><a href="#" id="matchingStats">매칭 통계</a></li>
+                                    <li><a href="#">예약 관리</a></li>
+                                 </sec:authorize>
+                                                
+                                 <sec:authorize access="permitAll">
+                                 <sec:authorize access="!hasRole('ROLE_ADMIN')">   
+                                 	<li><a href="/noticeList">공지사항</a></li>
+                                 	<sec:authorize access="hasRole('ROLE_USER')">
+                                 		<li><a href="/user/request">요청목록</a></li>   
+                                 	</sec:authorize>                         
+                                 	<li><a href="#">칭찬하기</a></li>
+                                 	<li><a href="/suggestionList">건의하기</a></li>
+                                 	<li><a href="#">편의시설</a></li>
+                                </sec:authorize>
+                                </sec:authorize>  
+                              </ul>
+                           </nav>
                   
                   <!-- Search -->       
                      <section id="search" class="alt">
@@ -176,9 +190,9 @@
       </div>
 
    <!-- Scripts -->
-      <script src="assets/js/jquery.min.js"></script>
-      <script src="assets/js/browser.min.js"></script>
-      <script src="assets/js/breakpoints.min.js"></script>
-      <script src="assets/js/util.js"></script>
-      <script src="assets/js/main.js"></script>
+      <script src="/resources/assets/js/jquery.min.js"></script>
+      <script src="/resources/assets/js/browser.min.js"></script>
+      <script src="/resources/assets/js/breakpoints.min.js"></script>
+      <script src="/resources/assets/js/util.js"></script>
+      <script src="/resources/assets/js/main.js"></script>
 </body>

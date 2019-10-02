@@ -1948,9 +1948,9 @@ input, select, textarea {
 
 			input[type="checkbox"] + label:before,
 			input[type="radio"] + label:before {
-				background: #595a5c;
-				border-radius: 0.375em;
-				border: solid 1px rgba(210, 215, 217, 0.75);
+				background: #ffffff;
+           	 	border-radius: 0.375em;
+           		border: solid 1.2px #6e737780;
 				content: '';
 				display: inline-block;
 				font-size: 0.8em;
@@ -1965,9 +1965,9 @@ input, select, textarea {
 
 		input[type="checkbox"]:checked + label:before,
 		input[type="radio"]:checked + label:before {
-			background: #3d4449;
-			border-color: #3d4449;
-			color: #595a5c;
+	        background: #ffffff;
+	        border-color: #6e7377;
+	        color: #3dbc98;   
 			content: '\f00c';
 		}
 

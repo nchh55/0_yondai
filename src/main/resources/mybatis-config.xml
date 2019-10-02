@@ -10,6 +10,12 @@
 		<typeAlias type="global.sesoc.tasukete.dto.Request" alias="Request" />
 		<typeAlias type="global.sesoc.tasukete.dto.Report" alias="Report" />
 		<typeAlias type="global.sesoc.tasukete.dto.Compliment" alias="Compliment" />
+		<typeAlias type="global.sesoc.tasukete.dto.Request_user" alias="Request_user" />
+		
+		<typeAlias type="global.sesoc.tasukete.dto.Suggreply" alias="Suggreply" />
+		
+     	<typeAlias type="global.sesoc.tasukete.dto.Sugrereply" alias="Sugrereply" />
+		<typeAlias type="global.sesoc.tasukete.dto.User_auth" alias="User_auth" />
 	</typeAliases>
 	
 	<mappers>

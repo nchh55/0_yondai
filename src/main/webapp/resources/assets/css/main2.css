@@ -3123,7 +3123,7 @@ input, select, textarea {
 		-webkit-transition: margin-left 0.5s ease, box-shadow 0.5s ease;
 		-ms-transition: margin-left 0.5s ease, box-shadow 0.5s ease;
 		transition: margin-left 0.5s ease, box-shadow 0.5s ease;
-		background-color: #4a4848; 
+		background-color: #cccccc; 
 		font-size: 0.9em;
 		position: relative; 
 		width: 26em;
@@ -3670,7 +3670,7 @@ input, select, textarea {
 				}
 
 			#matchingbar > .inner > .alt {
-				background-color: #727dab;
+				`-color: #727dab;
 				border-bottom: 0;
 				margin: -2.22222em 0 4.44444em -2.22222em;
 				padding: 2.22222em;
