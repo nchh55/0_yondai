@@ -151,7 +151,7 @@
                                     </li>                              
                                     <li><a href="/admin/matchingMgmt" id="matchingMgmt">매칭 관리</a></li>
                                     <li><a href="#" id="matchingStats">매칭 통계</a></li>
-                                    <li><a href="#">예약 관리</a></li>
+                                    <li><a href="/suggestionList">건의 관리</a></li>
                                  </sec:authorize>
                                                 
                                  <sec:authorize access="permitAll">

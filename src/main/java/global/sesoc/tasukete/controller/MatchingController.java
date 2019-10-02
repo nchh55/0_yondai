@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import global.sesoc.tasukete.dao.MatchingRepository;
+import global.sesoc.tasukete.dto.Notice;
 import global.sesoc.tasukete.dto.Request;
 import global.sesoc.tasukete.dto.Request_user;
 import global.sesoc.tasukete.dto.Tasukete_user;
@@ -41,7 +42,6 @@ public class MatchingController {
 	}
 	
 
-
 	@RequestMapping(value="/admin/matchingList" , method = RequestMethod.GET)
 	@ResponseBody
 	public List<Request> matchingList(
@@ -49,55 +49,28 @@ public class MatchingController {
 			@RequestParam(value="currentPage", defaultValue="1") int currentPage,
 			Model model) {
 		
-		System.out.println(request_flag);
-		
 		int countPerPage = 3;
 		int srow = 1 + (currentPage-1) * countPerPage;
 		int erow = currentPage * countPerPage;
 		int total = repository.getMatchingCount(request_flag, srow, erow);
 		
-		int totalPages = total / countPerPage;
-		totalPages += (total % countPerPage != 0) ? 1 : 0;
+		int totalRecordCount = repository.getNoticeCount(searchItem, searchWord);
 		
-		List<Request> list = repository.selectAll(request_flag, srow, erow);
-		
-		model.addAttribute("totalPages", totalPages);
-		model.addAttribute("request_flag", request_flag);
-		model.addAttribute("currentPage", currentPage);
-		model.addAttribute("countPerPage", countPerPage);
-
-		//model.addAttribute("request_flag", request.getRequest_flag());
-		
-		return list;
-	}
-
-	
-	
-/*	@RequestMapping(value="/admin/matchingList" , method = RequestMethod.GET)
-	@ResponseBody
-	public List<Request> matchingList(String searchDate, String searchItem,
-			@RequestParam(value="searchWord", defaultValue="") String searchWord,
-			@RequestParam(value="searchFlag", defaultValue="all") String searchFlag,
-			@RequestParam(value="currentPage", defaultValue="1") int currentPage,
-			Model model) {
-		
-		int totalRecordCount = repository.getMatchingCount(searchFlag);
-		PageNavigator navi = new PageNavigator(currentPage, totalRecordCount);
+		PageNavigator_A navi = new PageNavigator_A(currentPage, totalRecordCount);
 		
 		int sRow = navi.getSRow();
 		int eRow = navi.getERow();
 		
-		List<Request> list = repository.selectAll(searchFlag, sRow, eRow);
+		List<Notice> list = repository.selectAll(searchItem, searchWord, sRow, eRow);
 		
-		model.addAttribute("totalPages", totalPages);
-		model.addAttribute("request_flag", searchFlag);
-		model.addAttribute("currentPage", currentPage);
-		model.addAttribute("countPerPage", countPerPage);
+		model.addAttribute("searchItem", searchItem);
+		model.addAttribute("searchWord", searchWord);
+		model.addAttribute("navi", navi);
+		model.addAttribute("list", list);
 
-		//model.addAttribute("request_flag", request.getRequest_flag());
 		
 		return list;
-	}*/
+	}
 	
 	
 	@RequestMapping(value="/admin/matchingDetail" , method = RequestMethod.GET)

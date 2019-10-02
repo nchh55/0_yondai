@@ -4,11 +4,6 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>  
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE HTML>
-<!--
-   Editorial by HTML5 UP
-   html5up.net | @ajlkn
-   Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
 <head>
 <title>유저화면</title>
@@ -34,7 +29,6 @@
       <!-- Main -->
          <div id="main">
             <div class="inner">
-
                <!-- Header -->
                   <header id="header">
                      <a href="index" class="logo"><strong>TASUKETE</strong> Help Communication</a>
@@ -47,48 +41,53 @@
                   <section id="banner">
                      <div class="table-wrapper">
                      <h2>건의 글 자세히 보기</h2>
-                        <table>
-                           <tr>
-                              <th>제목</th>
-                              <td> ${suggestion.suggestion_title}</td>
-                           </tr>
-                           <tr>
-                              <th>회원아이디</th>
-                              <td>${suggestion.userid}</td>
-                           </tr>
-                           <tr>
-                              <th>접수일시</th>
-                              <td>${suggestion.reception_date }</td>
-                           </tr>
-                           <tr>
-                              <th>건의내용</th>
-                              <td>
-                              <pre>${suggestion.suggestion_contents }
-                              </pre>
-                              </td>
-                           </tr>
-                           <tr>
-                              <th>처리일시</th>
-                              <td>${suggestion.completion_date }</td>
-                           </tr>
-                           <tr>
-                              <th>진행상태</th>
-                              <td>${suggestion.progress_flag }</td>
-                           </tr>
-                           <tr>
-                              <th>건의결과</th>
-                              <td>
-                              <pre>
-                              ${suggestion.suggestion_result }
-                              </pre></td>
-                           </tr> 
-                           <tr> 
-                              <th>
-                                 <a href="suggestionList" id="back" class="button small">목록으로</a>
-                                 <a href="suggestionDelete?suggestionseq=${suggestion.suggestionseq}" class="button small">삭제</a> 
-                                 <a href="suggestionUpdate?suggestionseq=${suggestion.suggestionseq}" class="button small">수정</a> 
-                              </th>
-                           </tr>
+                     	<table>
+                     		<tr>
+								<th>제목</th>
+								<td> ${suggestion.suggestion_title}</td>
+							</tr>
+							<tr>
+								<th>회원아이디</th>
+								<td>${suggestion.userid}</td>
+							</tr>
+							<tr>
+								<th>접수일시</th>
+								<td>${suggestion.reception_date }</td>
+							</tr>
+							<tr>
+								<th>건의내용</th>
+								<td>
+									<pre>${suggestion.suggestion_contents }</pre>
+								</td>
+							</tr>
+							<tr>
+								<th>처리일시</th>
+								<td>${suggestion.completion_date }</td>
+							</tr>
+							<tr>
+								<th>진행상태</th>
+								<td>${suggestion.progress_flag }</td>
+							</tr>
+							<tr>
+								<th>건의결과</th>
+								<td>
+									<pre>${suggestion.suggestion_result }</pre>
+								</td>
+							</tr> 
+							<tr>
+								<th>
+									<sec:authorize access="hasRole('ROLE_USER')">
+										<a href="suggestionList" id="back" class="button small">목록으로</a>
+										<a href="suggestionDelete?suggestionseq=${suggestion.suggestionseq}" class="button small">삭제</a> 
+										<a href="suggestionUpdate?suggestionseq=${suggestion.suggestionseq}" class="button small">수정</a>
+									</sec:authorize>
+									<sec:authorize access="hasRole('ROLE_ADMIN')">
+										<a href="suggestionList" id="back" class="button small">목록으로</a>
+										<a href="suggestionDelete?suggestionseq=${suggestion.suggestionseq}" class="button small">삭제</a> 
+										<a href="suggestionUpdate?suggestionseq=${suggestion.suggestionseq}" class="button small">수정</a>
+									</sec:authorize>
+                           		</th>
+                           	</tr>
                         </table>
                      </div>                     
                   </section>
@@ -240,7 +239,7 @@
                                     </li>                              
                                     <li><a href="/admin/matchingMgmt" id="matchingMgmt">매칭 관리</a></li>
                                     <li><a href="#" id="matchingStats">매칭 통계</a></li>
-                                    <li><a href="#">예약 관리</a></li>
+                                    <li><a href="/suggestionList">건의 관리</a></li>
                                  </sec:authorize>
                                                 
                                  <sec:authorize access="permitAll">
