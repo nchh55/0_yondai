@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+	   	
+		 <bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
+		 <bean id="customUserDetailsService" class="global.sesoc.tasukete.security.CustomUserDetailsService"></bean>
+		 <bean id="sessionDestroyListener" class="global.sesoc.tasukete.security.SessionDestroyListener"/>
+		<!--  <bean id="sessionCreateListener" class="global.sesoc.tasukete.security.SessionCreateListener"></bean>
+		 --> 
+		 <bean id="authenticationSuccessHandler" class="global.sesoc.tasukete.security.authenticationSuccessHandler"></bean>
+		  
+		<security:http> 
+			<security:intercept-url pattern="/user/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
+			<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
+			<security:intercept-url pattern="/**" access="permitAll"/>
+			
+			<security:form-login 	
+				username-parameter="userid"
+				password-parameter="userpwd"
+				login-page="/login" 
+				authentication-success-handler-ref="authenticationSuccessHandler"
+				/>
+				
+			<security:logout 
+				logout-url="/logout"
+				logout-success-url="/index"  
+				delete-cookies="JSESSIONID"/>   
+				
+			<security:access-denied-handler error-page="/denied"/>
+			
+			<security:session-management session-fixation-protection="migrateSession"  invalid-session-url="/sessionExpired" >
+				<security:concurrency-control max-sessions="1" session-registry-alias="sessionRegistry" expired-url="/sessionExpired?error=duplication"/>
+			</security:session-management>  
+		</security:http> 
+		
+		<security:authentication-manager>
+			<security:authentication-provider user-service-ref="customUserDetailsService">
+				<security:password-encoder ref="bcryptPasswordEncoder"/>
+			</security:authentication-provider>
+		</security:authentication-manager>
+	
+		
+		
+</beans>
