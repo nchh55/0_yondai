@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="global.sesoc.tasukete.dao.MatchingMapper">
+
+    <select id="selectAll" resultType="Request" parameterType="map">
+		SELECT
+			requestseq
+			,request_contents
+			,userid
+			,req_x
+			,req_y
+			,request_date
+			,request_flag
+		FROM request
+		<if test="request_flag != 'all'">
+		WHERE	
+			request_flag = #{request_flag}
+		</if>
+		ORDER BY request_date DESC	
+	</select>
+	
+	<select id="getMatchingCount" resultType="int" parameterType="map">
+		SELECT	count(*)
+		FROM	request
+		<if test="request_flag != 'all'">
+			WHERE	request_flag = #{request_flag}
+		</if>
+	</select>
+
+
+<!-- 검색 기능 추가로 인한 코드 변경중...	
+	<select id="selectAll" resultType="Request" parameterType="map">
+		SELECT
+			requestseq
+			,request_contents
+			,userid
+			,req_x
+			,req_y
+			,request_date
+			,request_flag
+		FROM request
+		WHERE
+		<if test='request_flag != "all"'>
+			request_flag = #{request_flag}
+		</if>
+			#{srow}
+			
+			
+		
+		ORDER BY request_date DESC	
+	</select> 
+	
+	
+	
+	<select id="getMatchingCount" resultType="int" parameterType="map">
+		SELECT	count(*)
+		FROM	request
+		<if test="searchFlag != 'all'">
+			WHERE	request_flag = #{searchFlag}
+		</if>
+	</select>
+	
+-->
+	
+	<select id="selectOne" resultType="Request_user" parameterType="Request_user">
+		SELECT
+			username
+			,userbirth
+			,userphone
+			,disabled
+			,matching_flag
+			,r.*
+		FROM(
+			SELECT 
+				requestseq
+				,request_contents
+				,userid
+				,support_id
+				,req_x
+				,req_y
+				,supp_x
+				,supp_y
+				,request_date
+				,completion_date
+				,request_flag
+			FROM request
+			WHERE 
+				requestseq = #{requestseq}
+			) r, tasukete_user tu
+		<if test="userid == null">
+		WHERE
+			r.userid = tu.userid 
+		</if>
+		<if test="userid != null">
+		WHERE
+			r.support_id = tu.userid
+		</if>
+		
+	</select>
+
+	<select id="selectSupp" resultType="Tasukete_user" parameterType="Tasukete_user">
+		SELECT
+			userid
+			,username
+			,userphone
+			,disabled
+			,user_x
+			,user_y
+			,matching_flag
+		FROM tasukete_user
+		WHERE
+			matching_flag = 'waiting'
+	</select>
+ 
+	<select id="selectUser" resultType="Tasukete_user" parameterType="Tasukete_user">
+		SELECT
+			userid
+			,username
+			,userbirth
+			,userphone
+			,disabled
+			,user_x
+			,user_y
+			,compliment_count
+			,matching_flag
+			,statA
+			,statB
+			,statC
+		FROM tasukete_user
+		WHERE
+			userid = #{userid}
+	</select>
+	
+	
+	<!-- 관리자가 매칭을 수정한 경우 요청(테이블) 정보를 변경하기 -->
+	<update id="updateOne" parameterType="Request">
+		UPDATE request
+		SET
+			support_id = #{support_id}
+			,supp_x = #{supp_x}
+			,supp_y = #{supp_y}
+			<if test='request_flag.equals("normal")'>
+				,completion_date = null
+			</if>
+			<if test='request_flag.equals("uncompleted")'>
+				,completion_date = '미완료'
+			</if>
+			,request_flag = #{request_flag}
+		WHERE
+			requestseq = #{requestseq}
+	</update>
+	
+	<!-- 관리자가 매칭을 수정한 경우 요청자와 지원자의 상태를 변경하기 -->
+	<update id="updateFlag_req" parameterType="Request">
+			UPDATE tasukete_user
+			SET		
+				<if test='request_flag.equals("normal")'>
+					matching_flag = 'matching_req'
+				</if>
+				<if test='request_flag.equals("uncompleted")'>
+					matching_flag = 'normal'
+				</if>
+			WHERE
+				userid = #{userid}
+	</update>
+	
+	<update id="updateFlag_supp" parameterType="Request">
+			UPDATE tasukete_user
+			SET		
+				<if test='request_flag.equals("normal")'>
+					matching_flag = 'matching_supp'
+				</if>
+				<if test='request_flag.equals("uncompleted")'>
+					matching_flag = 'normal'
+				</if>
+			WHERE
+				userid = #{support_id}
+	</update>
+	
+	
+	<!-- 관리자가 매칭을 수정한 경우(지원자 변경으로 기존 지원자의 상태를 변경하기) -->
+	<update id="updateFlag_ex" parameterType="Request">
+		UPDATE tasukete_user
+		SET
+			<if test='request_flag.equals("normal")'>
+				matching_flag = 'waiting'
+			</if>
+			<if test='request_flag.equals("uncompleted")'>
+				matching_flag = 'normal'
+			</if>
+		WHERE
+			userid = #{ex_support_id}
+	</update>
+	
+		
+	
+	<select id="selectWait" resultType="Tasukete_user" parameterType="Tasukete_user">
+		SELECT
+			userid
+			,username
+			,userphone
+			,disabled
+			,user_x
+			,user_y
+			,matching_flag
+		FROM tasukete_user
+		WHERE
+			matching_flag = 'waiting'
+			<!--  
+			user_x between  to_number(#{user_x})-0.1 and to_number(#{user_x})+0.1
+			AND
+			user_y between  to_number(#{user_y})-0.1 and to_number(#{user_y})+0.1
+			-->
+			AND
+				#{user_x}-0.02 &lt; user_x 
+			AND 
+				user_x &lt; #{user_x}+0.02
+			AND
+				#{user_y}-0.02 &lt; user_y
+			AND
+				user_y &lt; #{user_y}+0.02
+	</select>
+	
+</mapper>
